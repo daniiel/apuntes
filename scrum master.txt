@@ -1,0 +1,326 @@
+
+MASTERING AGILE SCRUM PROJECT MANAGEMENT PMI
+
++ Whhy agile?
+
+	. desire to gain knowledge
+	. build a powerful arsenal
+	. understand In's | Out's of AGILE
+
++ PMI Agile Domains
+	
+	. Agile principles and mindset (mentalidad)
+	. Value driven delivery
+	. Stakeholder engagement
+	. Boosting team performance
+	. Adaptative planning
+	. Problem detection and resolution
+	. Continuous improvement
+
++ What is AGILE project management?
+	How would you define it? 
+		what is your take on its definition? (cual es tu opinion sobre su definicion)
+	
+	. Agile .: Def: able to move quickly and easily;
+
+		- Teams
+		- Flexible
+		- Intelligent
+		- Interchangeable
+		- Team dynamics and collaborate
+
++ Traditional Project Management Methods
+	such as those touted by the Project Management Institute
+
+	. Waterfall
+	. PRINCE2
+
+	** A good project manager should take the best from any tool, technique or process
+   		that best fits the project's need
+
+   	Demostration
+   	---------------------------
+   	. No one best way
+   	. One-size-fits-all
+   	. Comprehension of 
+   		- advantages
+   		- disadvantages
+   	. Evaluate 
+   		- Benefits
+   		- Downfalls
+
+
+   	+ Traditional Project Management
+
+   		. Defining ALL the work that would need to be done
+   		. Identify stakeholders
+   			- expectations
+   		. Formal agreement
+
+
+   		+ Example Project
+
+   			. Frequent conversations
+   			. Reassessments made
+   			. Work being performed
+   				. aligned to everyone's needs
+   				. adjusted as needed
+   			. Knowledge of the worker
+   			. Computer power
+
+   		** The traditional requires sizble amounts of resources
+   			financial, and labor. The cost of rework is minimal
+   			in comparison. Projects such as this depend more on
+   			the knowledge of the worker and the computer
+
+         EXERCISE
+
+         You are a project manager in the company.
+
+         The company's executive team is seeing a trend for smaller divices
+         that completely fit in the palm of one's hand.
+
+         This surge in popularity is due to a competing phone company that
+         released a glowing bluetooth of a phone that displays holographic
+         content above it and when have a phone call, the phone fits onto
+         your ear like a slick, space age bluetooth earpice.
+
+         As the sales of the glowing bluetooth phone are skyrocketing, gobbling 
+         up market share, and winning the praises of tech magazines and 
+         declaring the firm as the brightest company in the industry, your
+         company sets out to cash in on the trend.
+
+         After months of market research and feasibility studies - technical
+         and non-technical - the "power that be" decide to initiate a project
+         that would add the "groundbreaking" new feature of being able to 
+         squeeze your company's version of the tube phone to unlock it. 
+
+         The engineers at your firm determine it possible to recognize the user's 
+         hand by their hand size, pressure of the squeeze an the unique way 
+         each hand would be defined as part of a unique squeeze.
+
+
++ Disadventages
+
+   - pitfall (obstaculos)
+
+      - use the agile method on projects unsuited to it
+      - Agile projects are best suited for work consisting more of 
+            "knowledge work" than project consisting more of 
+            "physical work", such as manufacturing or capital projects.
+      - reliance on stakeholders involvement.
+         . Needing continual activity to keep the project moving correctly
+
++ Agile manifesto
+
+   Heart of Agile project management
+
+   . Guiding principle of agile project management.
+      - Project Management Institute - Agile Certified Practitioner (PMI-ACP)
+
+   + Principles
+
+      1. Our highest priority is to satisfy the customer through early and 
+         continuous delivery of valuable software.
+      2. Welcome changing requirements, even late in development. Agile 
+         processes harness changes to the customer's competitive advantage.
+      3. Deliver working software frequently, from a couple of weeks to a 
+         couple of months, with a preference to the shorter timescale.
+      4. Business people and developers must work together daily throughout
+         the project.
+      5. Build projects around motivated individuals. Give them the enviroment
+         and support they need, and trust them to get the job done.
+      6. The most efficient and effective method of conveying information to and
+         within a development team is face-to-face conversation.
+
+   + History
+      . The Agile Manifesto started in the winter of 2001 at The Lodge at Snowbird resort in the Wasatch Mountains in Utah.
+      . It started in the winter of 2001
+      . 17 people gatherred (se reunieron) to talk and find common ground on the 
+         best practices and methods around the emerging discipline of agile 
+         project management.
+      . the gathering (reunion) Utah borught (trajo) a few people to talk, respected
+         styles in the software development industry. The styles represented were:
+            . Extrem programming (xp)
+            . Scrum
+            . DSDM
+            . Adaptive Software Development
+            . Crystal
+            . Feature-Driven development
+            . Pragmatic programming
+      . During the two days, the self-proclaimed "Agile Alliance" began to form an
+         agreement and loose standardization (estandarizacion flexible) of the 
+         agile project management methodology.
+      . Defined the general, overaching purpose.
+      . Established and documented the Agile Manifesto, its core values and principles.
+
+      + Manifesto
+
+         . Individuals and interactions over processes and tools
+         . Working software over comprehensive documentation
+         . Customer collaboration over contract negotiation
+         . Responding to change over following a plan 
+
+         The manifesto is keenly pointed at software development using agile methodologies,
+         but you can apply the concept, its values, and its principles to any managed project.
+
+            + Individuals and interactions
+               . tools
+                  - necessary to get work done
+                  - do not mandate how things go
+                  - should not dictate the solution
+               . processes
+                  - assistin making things more standardized and efficient.
+                  - rigid or tie up innovation and flexibility, are antithesis
+                  - too much or too through documentation is deterred
+               . mantra
+                  - only the documentation that is necessary
+               . value statement
+                  - policies and mechanisms followed in a agile project should not 
+                     override the day-to-day interactions and abilities of the people
+                     to operate in a flexible and agile manner.
+
+            + Working software
+               . documentation has inherent value
+               . value is more of a reaction to engineering perspective
+               . balance of sufficient documentation
+                  . consider the primary objective to deliver a product to a customer
+
+            + Customer collaboration
+               . agile
+                  - does not understand and plan every detail
+                  - does not base contract stringently on those mappings
+                  - flexibility
+                  - interest in combining hte voice of the customer in the decisions and 
+                     direction
+                  - enables constant communication
+                  - redefines when done is "done"
+
+                  The desire of a client to change direction should not be viewed punitively.
+                  The beauty of agile project management is its flexibility and its interest
+                  in combining hte voice of the customer into the decisions anddirection that 
+                  makes the approach so powerful.
+
+                  - contract terms
+                     . contracts rule
+                        . connsider formulating the contract to best accommodate and encourage 
+                           collaboration between agile teams and the customer.
+
+                        "..it is better to do the right thing for the project than worry about 
+                        being completely right.."
+
+            + Responding to change over folling plan
+
+               . agile style
+                  - rigorous and ardous
+                  - derail the nature of agile
+                  - change
+                  - keep progressing towards value
+
+               . responding to change
+                  - the value statement is not saying planning is unnecessary and we should
+                     simply make things up as we go (a medida que avanzamos).
+                  - planning is necessary, and a critical component of agile project management.
+                  - since changes are expected, you plan heavily (fuertemente) for the short term
+                     and lightly for the long term.
+
++ Agile manifest - principles
+
+   1. Our highest priority is to satisfy the customer through early and continuous delivery of valuable
+      software.
+      
+      - customer
+      - internal / external
+      - early delivery
+         . delivering and/or sharing work-in-progress for critique by others
+      - constant feedback
+         . verifies the work is progressing as desired
+      - welcome productive criticism
+
+      The satisfaction of the needs of the customer is the highest priority of agile project management;
+      really, this should be the primary objective for all project management.
+
+
+   2. Welcome changing requirements, even late in development. Agile processes harness change for the 
+      customer's competitive advantage.
+
+         The changes are welcome, even after a lot of work has been done.
+
+         Traditional change management is bureaucratic to force the justification for change be thorough and
+         leave a paper trail.
+
+         With the voice of the customer tightly involved, they can see the project's progress, understand its
+         advancement, and provide valid input for cahnge more meaningfully.
+
+   3. Deliver working software frequently, from a couple of weeks to a couple of months, with a preference to 
+      the shorter timescale.
+
+         - prototypes
+         - proof of concept
+         - ability to make more educated suggestions and requests
+
+         Is ideal in terms of gathering feedback and impressions, and communicating visions, approaches, or
+         areas of confusion.
+
+         Getting regular checks more often is key
+
+   4. Business people and developers must work together daily throughout the project.
+
+         . daily interactions
+         . leveraging
+            - perpesctives
+            - input
+            - feedback
+         . requesting feedback
+            - face-to-face
+
+         The important stakeholders are those from the business, customer, or end user side.
+
+   5. Build projects around motivated individuals. Give them the environmnet and support
+      the need, and trust them to get the job done.
+
+         - Utilizig smart and motivated people is more effective than almost any other tool or process out
+           there. 
+
+         - Manage knowledgeable workers
+         - Modern worker
+            - Do not want micromanaged elements
+               - excessive paperwork
+               - detailed project plans
+               - top-down directed mandates
+         * Creating a project space for individuals to:
+            - grow
+            - think
+            - craft
+
+      The trust and confidence in your teammates (compañeros de equipo) is powerful.
+      Give everyone the support they need to succeed, and trust that they will. 
+
+      Motivation
+         - trust 
+         - confidence
+         - support needed to succeed
+            - tools
+            - resources
+            - backing (apoyo)
+            - provision of knowledge
+
+   6. The most efficient and effective method of conveying information to and within a
+      development team is face-to-face conversation.
+
+         - Written communications take time to write, and there are more opportunities for
+            misinterpretation and details being lost in translation.
+         - Holding face-to-face meetings can have their share of miscommunication, but the
+            miscommunication is typically less when interacting in person.
+
+   Conclusions
+
+   Six principles
+
+   1. Satisfy the customer
+   2. Welcome changing requirements
+   3. Deliver working software frequently
+   4. Business people and developers must work together daily
+   5. Build projects around motivated individuals
+   6. Convey information to and within the development team
+
