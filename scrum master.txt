@@ -324,3 +324,27 @@ MASTERING AGILE SCRUM PROJECT MANAGEMENT PMI
    5. Build projects around motivated individuals
    6. Convey information to and within the development team
 
+
+Agilet the root of the modern structure of agile project management is the agile manifesto.
+
+   Manifesto 
+      - Not a set of rules
+      - More of a thought process
+         - guide to deliver projects
+         - from value based perspective
+
+
+   7. Working software is the primary measure of progress
+      . Getting things donde not only helps every see progress, but is also the catalyst to 
+         driving other principles.
+      . It is much easier to get feedback and input when you have something tangible to share
+      . Having working pieces helps the team gain acceptances of features and other product components.
+
+   8. Agile processes promote sustainable development. The sponsors, developres and users shoul be able 
+      to maintain a constant pace indefinitely.
+
+   9. Continuous attention to technical excellence and good design enhances agility.
+      - Having good desings and constantly striving to improve those designs is critical.
+      - Big picture to consider the best most effective ways to attack a problem
+      - setting yourself up to do a lot of unncesary work later
+
