@@ -1,0 +1,446 @@
+	Angular
+	
+	ng new first-app
+	ng serve
+	
+	
+	+ Components
+	
+	App-root is also something we see in the app.component.ts file
+	in the selector, It looks like this is basically like our own HTML tag
+	we're creating.
+	
+	La pagina que uno ve de localhost:4200, al cual el codigo pertenece,
+	actualmente es el  index.html  file in the src folder. Here we also see
+	'app-root' The scripts imports are missing because they are injected 
+	dynamically.
+	
+	Angular carga la pagina. 
+		
+		<!doctype html>
+		<html lang="en">
+		<head>
+		  <meta charset="utf-8">
+		  <title>FirstApp</title>
+		  <base href="/">
+		  <meta name="viewport" content="width=device-width, initial-scale=1">
+		  <link rel="icon" type="image/x-icon" href="favicon.ico">
+		</head>
+		<body>
+		  <app-root></app-root>
+		</body>
+		</html>
+	
+	Then we have these dinamically-injected script imports and these script imports will 
+	dynamically replace  'app-root' with our own component.
+	
+	+ Install Bootstrap
+
+	npm install --save bootstrap@3
+	
+	Note: 
+		This installation is locally, not globaly, is just for the project that you are using
+			
+	- Add configuring Bootstrap (angular.json):
+	
+		"styles": [
+			  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+			  "src/styles.css"
+			]
+	
+	- app.module.ts : this is basically where we tell Angular which pieces belong to our
+			app and there we have to add something to import another package from Angular.
+			
+			import { FormsModule } from '@angular/forms';
+			
+			Typescript needs to know where things are, now with this import we can add it to 
+			this imports array down 
+			
+			this is simply a feature understood by Angular since it's part of an Angular module
+			
+			@NgModule({
+				..
+				imports: [
+					BrowserModule,
+					FormsModule   ***
+				]
+			})
+
+				
+			Component decorator	
+				
+			@Component({
+			  selector: 'app-sidebar',
+			  templateUrl: './sidebar.component.html',
+			  styleUrls: ['./sidebar.component.css']
+			})
+			
+		- HTML inline 
+
+		@Component({
+		  selector: 'app-sidebar',
+		  templateUrl: './sidebar.component.html',
+		  styleUrls: ['./sidebar.component.css']
+		})
+		
+		@Component({
+		  selector: 'app-sidebar',
+		  templateUrl: '<app-server></app-server>',
+		  styleUrls: ['./sidebar.component.css']
+		})
+		
+		- CSS inline
+		
+		@Component({
+		  selector: 'app-root',
+		  templateUrl: './app.component.html',
+		  //styleUrls: ['./app.component.css']
+		  styles: [`
+			h3 { color: red}
+		  `]
+		})
+		
+		- Convert the selector in a attribute
+		
+		@Component({
+		  selector: 'app-sidebar',
+		  templateUrl: './sidebar.component.html',
+		  styleUrls: ['./sidebar.component.css']
+		})
+		
+		<div class="container">
+		  <div class="row">
+			<div class="col-xs-12">
+			  <h3>App Component!</h3>
+			  <hr>
+			  <app-sidebar></app-sidebar>
+			</div>
+		  </div>
+		</div>
+		
+		
+		@Component({
+		  selector: '[app-sidebar]',
+		  templateUrl: './sidebar.component.html',
+		  styleUrls: ['./sidebar.component.css']
+		})
+	
+		<div class="container">
+		  <div class="row">
+			<div class="col-xs-12">
+			  <h3>App Component!</h3>
+			  <hr>
+			  <div app-sidebar></div>
+			</div>
+		  </div>
+		</div>
+		
+		@Component({
+		  selector: '.app-sidebar',
+		  templateUrl: './sidebar.component.html',
+		  styleUrls: ['./sidebar.component.css']
+		})
+		
+		<div class="container">
+		  <div class="row">
+			<div class="col-xs-12">
+			  <h3>App Component!</h3>
+			  <hr>
+			  <!--<app-sidebar></app-sidebar>
+			  <div app-sidebar></div>-->
+			  <div class="app-sidebar"></div>
+			</div>
+		  </div>
+		</div>
+	
+		
+	- Databinding (enlace de datos)
+	
+	Une una fuente de datos entre el origen de datos y las vistas y se encarga de 
+	sincronizarlos. Cada cambio en los datos se refleja automaticamente en los 
+	elementos.
+	
+		- String Interpolation
+			Allow us to display dynamic data on HTML page
+		
+			@Component({
+			  selector: '.app-sidebar',
+			  templateUrl: './sidebar.component.html',
+			  styleUrls: ['./sidebar.component.css']
+			})
+			export class SidebarComponent {
+			  serverId: number = 10;
+			  serverStatus: string = 'offline';
+			}
+		
+			<p>{{ 'server' }} with ID {{ serverId }} is : {{ serverStatus}} </p>
+	
+	- Property binding
+
+	Add attributes to tags that are binding with the .ts file
+	
+		<button class="btn btn-primary" [disabled]="!allowNewServer">
+		  Add Server
+		</button>
+		
+		Property binding : <p [innerHTML]="allowNewServer"></p>
+		String Interpolation: <p>{{allowNewServer}}</p>
+		
+	+ Directives
+		. let server -> create a temporally variable
+		*ngFor="let server of servers"
+	
+			
+	+ Shared folder
+		. Contain features or elements of our app which are shared across different features.
+
+	+ Class "Entity"
+	
+		- ingredient.module.ts file
+		
+		export class Ingredient {
+			public name: string;
+			public amount: number;
+			
+			constructor(name: string, amount: number){
+				this.name = name;
+				this.amount = amount;
+			}
+		}
+		
+			. Simplify the attributes declaration, only add an accessor in front
+			of the property name
+			
+		export class Ingredient {
+			constructor(public name: string, public amount: number){
+			}
+		}
+		
+			it will automatically assign the values we receive in this constructor
+			to these newly created properties.
+		
+	
+	- debuggin tools
+		. Angular Augury
+			https://augury.rangle.io/
+			
+
+	+ Interpolation binding
+
+		<h1>{{title}}</h1>
+
+	The double curly braces are Angular's interpolation binding syntax. 
+	This interpolation binding presents the component's title property value inside the HTML header tag.
+	
+	+ Two-way binding
+	
+		<div>
+		  <label>name:
+			<input [(ngModel)]="hero.name" placeholder="name"/>
+		  </label>
+		</div>
+		
+	[(ngModel)] is Angular's two-way data binding syntax.
+
+	Here it binds the hero.name property to the HTML textbox so that data can flow in both directions: 
+	from the hero.name property to the textbox, and from the textbox back to the hero.name
+	
+		- The missing FormsModule
+		
+		Notice that the app stopped working when you added [(ngModel)]
+		
+		
+	[(ngModel)] is Angular's two-way data binding syntax.
+
+	Here it binds the hero.name property to the HTML textbox so that data can flow in both directions: 
+	from the hero.name property to the textbox, and from the textbox back to the hero.name.
+	
+	AppModule
+Angular needs to know how the pieces of your application fit together and what other files and libraries the app requires. This information is called metadata.
+
+Some of the metadata is in the @Component decorators that you added to your component classes. Other critical metadata is in @NgModule decorators.
+
+The most important @NgModule decorator annotates the top-level AppModule class.
+
++ NgModule
+
+	@NgModule({
+	  declarations: [
+		AppComponent,
+		HeroesComponent
+	  ],
+	  imports: [
+		BrowserModule,
+		FormsModule
+	  ],
+	  providers: [],
+	  bootstrap: [AppComponent]
+	})
+
+	- Imports
+	
+	Then add FormsModule to the @NgModule metadata's imports array, which contains a list of external modules that the app needs.
+	
+	- @NgModule.declarations array.
+	
+	declares both application components, AppComponent and HeroesComponent.
+	
+	
+	- *ngFor Directive
+	
+		<li *ngFor="let hero of heroes">
+	
+	The *ngFor is Angular's repeater directive. It repeats the host element for each element in a list.
+		
+		. <li> is the host element
+		. heroes holds the mock heroes list from the HeroesComponent class, the mock heroes list.
+		. hero holds the current hero object for each iteration through the list.
+		
+	
+	What happened?	
+	
+		HeroesComponent.html:3 ERROR TypeError: Cannot read property 'name' of undefined
+	
+	When the app starts, the selectedHero is undefined by design.
+	Binding expressions in the template that refer to properties of selectedHero—expressions like {{selectedHero.name}}—must fail
+	because there is no selected hero.
+	
+	
+	The fix - hide empty details with *ngIf
+	
+	The component should only display the selected hero details if the selectedHero exists.
+	Wrap the hero detail HTML in a <div>. Add Angular's *ngIf directive to the <div> and set it to selectedHero.
+	
+	
+	- Class binding
+	
+	The Angular class binding makes it easy to add and remove a CSS class conditionally. Just add [class.some-css-class]="some-condition"
+	to the element you want to style.
+
+	Add the following [class.selected] binding to the <li> in the HeroesComponent template:
+
+	heroes.component.html (toggle the 'selected' CSS class)
+
+		[class.selected]="hero === selectedHero"
+		
+		
+	- @Input() decorator
+		
+	The hero property must be an Input property, annotated with the @Input() decorator, because the external HeroesComponent will bind to it like this.
+
+		<app-hero-detail [hero]="selectedHero"></app-hero-detail>	
+		
+		. [hero]="selectedHero" is an Angular property binding.
+		
+	- Refactoring
+	
+	Refactoring the original HeroesComponent into two components yields benefits, both now and in the future:
+
+	You simplified the HeroesComponent by reducing its responsibilities.
+
+	You can evolve the HeroDetailComponent into a rich hero editor without touching the parent HeroesComponent.
+
+	You can evolve the HeroesComponent without touching the hero detail view.
+
+	You can re-use the HeroDetailComponent in the template of some future component.
+	
+	
+	Why services ? 
+	
+	Components shouldn't fetch or save data directly and they certainly shouldn't knowingly present fake data. 
+	They should focus on presenting data and delegate data access to a service.
+
+	In this tutorial, you'll create a HeroService that all application classes can use to get heroes. 
+	Instead of creating that service with new, you'll rely on Angular dependency injection to inject it into the HeroesComponent constructor.
+
+	Services are a great way to share information among classes that don't know each other. You'll create a 
+	MessageService and inject it in two places:
+
+		in HeroService which uses the service to send a message
+		in MessagesComponent which displays that message
+			
+	
+	Creating a service (https://angular.io/tutorial/toh-pt4#create-the-heroservice)
+	
+	
+	Observable data
+	
+	The HeroService.getHeroes() method has a synchronous signature, which implies that the HeroService can 
+	fetch heroes synchronously. The HeroesComponent consumes the getHeroes() result as if heroes could be fetched synchronously.
+
+	src/app/heroes/heroes.component.ts
+	
+		this.heroes = this.heroService.getHeroes();
+		
+	This will not work in a real app. You're getting away with it now because the service currently returns mock heroes. 
+	But soon the app will fetch heroes from a remote server, which is an inherently asynchronous operation.
+
+	The HeroService must wait for the server to respond, getHeroes() cannot return immediately with hero data, and the 
+	browser will not block while the service waits.
+
+	HeroService.getHeroes() must have an asynchronous signature of some kind.
+
+	In this tutorial, HeroService.getHeroes() will return an Observable because it will eventually use the 
+	Angular HttpClient.get method to fetch the heroes and HttpClient.get() returns an Observable.
+
+	Observable HeroService
+	Observable is one of the key classes in the RxJS library.
+
+	In a later tutorial on HTTP, you'll learn that Angular's HttpClient methods return RxJS Observables. In this tutorial, 
+	you'll simulate getting data from the server with the RxJS of() function.
+
+	Open the HeroService file and import the Observable and of symbols from RxJS.
+	
+	
+	Provide the HeroService
+	
+	You must make the HeroService available to the dependency injection system before Angular can inject it into the HeroesComponent 
+	by registering a provider. A provider is something that can create or deliver a service; in this case, it instantiates the HeroService 
+	class to provide the service
+	
+	
+	Routes
+	
+	The next part of the file is where you configure your routes. Routes tell the Router which view to display when a user clicks
+	a link or pastes a URL into the browser address bar.
+
+	Since AppRoutingModule already imports HeroesComponent, you can use it in the routes array:
+
+		src/app/app-routing.module.ts
+
+			const routes: Routes = [
+			  { path: 'heroes', component: HeroesComponent }
+			];
+	
+			
+			A typical Angular Route has two properties:
+
+				. path: a string that matches the URL in the browser address bar.
+				. component: the component that the router should create when navigating to this route
+				
+			This tells the router to match that URL to path: 'heroes' and display the HeroesComponent when the URL is something like localhost:4200/heroes.
+			
+	
+	Notes Course Udemy
+	
+	. by default all the attributes of a class are only accesibles by the component not from outside
+	
+		export class ServerElementComponent {
+			element: {type: string, name: string, content: string};
+		}
+		
+	. Using the '@Input()' decorator the attribute can be expose to the outside
+	
+		@Input() element: {type: string, name: string, content: string};
+		
+		- add an alias to the outside binding
+		
+			app.component.ts
+			@Input('srvElement')
+			
+			..
+			
+			server-element.component.html
+			<app-server-element *ngFor="let serverElement of serverElements" 
+								[srvElement]="serverElement">
+			

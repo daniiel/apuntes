@@ -1,0 +1,144 @@
+
+            Protractor
+            ==========
+
+	Prerequisitos
+		
+		. Protractor is a Node.js program. you will need to have Node.js installed (node --version)
+		. By default, Protractor uses the Jasmine test framework for its testing interface
+		. You will need to have the JDK installed to run the Selenium Server. (java --version)
+		
+    Below are the mandatory commands for getting started
+
+		$ npm install -g protractor		/		npm uninstall -g protractor      
+		$ webdriver-manager update --ignore_ssl
+		$ webdriver manager start
+
+		$ protractor conf.js  (Run tests using the terminal)
+
+    + IntelliJ Plugins
+	
+        . AngularJS (installed)
+        . jasmine
+        . TypeScript
+        . JavaScript
+
+    Commands Protractor (created by Protractor)
+		
+		. element	funtion is used to finding HTML elements, it returns ElementFinder object
+		. by		creates locators 
+			
+			by.model('first') to find the element with ng-model="first". <input type="text" ng-model="first">
+			by.id('gobutton') to find the element with the given id. This finds <button id="gobutton">
+			by.binding('latest') to find the element bound to the variable latest. This finds the span containing {{latest}}
+
+        
+    Changing configuration file (conf.js)
+	
+	. url = https://www.protractortest.org/#/tutorial#step-3-changing-the-configuration
+	
+		basic configuration
+		
+			exports.config = {
+			  framework: 'jasmine',
+			  seleniumAddress: 'http://localhost:4444/wd/hub',
+			  specs: ['todo-spec.js']
+			};
+
+		
+	+ Change broser to 'firefoz'
+
+		exports.config = {
+		  framework: 'jasmine',
+		  seleniumAddress: 'http://localhost:4444/wd/hub',
+		  specs: ['spec.js'],
+		  capabilities: {
+			browserName: 'firefox'
+			}
+		}
+    
+	Protractor examples spec.js without PageObject Model
+	
+		https://github.com/angular/protractor/blob/5.4.1/example/example_spec.js
+		
+	Configuracion de suits de pruebas
+	
+		http://www.protractortest.org/#/page-objects#configuring-test-suites
+
+	<input class="btn-primary" type="submit" value="add">
+	element(by.css('[value="add"]')).click();
+        
+    CODE
+    ===========
+
+    .  This statement will be process in random order because 'console.log()' is a JavaScript code and this
+        doesn't follow the promises of protractor
+        
+        console.log(element(by.css("h2[class='ng-binding']")).getText());
+        element(by.css("h2[class='ng-binding']")).getText().then(function (text) {
+            console.log(text);
+        });
+
+        
+    COMMANDS
+    ===========
+    
+    webdriver-manager clean to remove your files
+    webdriver-manager update to download your binaries again
+
+    
+    VIDEO
+    ===========
+ 
+  1. Copiar este folder inside the project C:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\built\cli.js
+
+
+    Troubleshooting
+    ================
+
+1. $ webdriver-manager update
+    [10:18:24] I/config_source - curl -oC:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\node_modules\webdriver-manager\selenium\gecko-response.json https:/
+    [10:18:25] I/downloader - curl -oC:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\node_modules\webdriver-manager\selenium/chromedriver_78.0.3904.105.zip
+    [10:18:25] I/downloader - curl -oC:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\node_modules\webdriver-manager\selenium/selenium-server-standalone-3.1.jar
+    [10:18:25] I/downloader - curl -oC:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\node_modules\webdriver-manager\selenium/selenium-server-standalone-3.1.jar
+    events.js:187
+          ^
+          throw er; // Unhandled 'error' event
+
+    Error: unable to get local issuer certificate
+        at TLSSocket.onConnectSecure (_tls_wrap.js:1321:34)
+        at TLSSocket.emit (events.js:210:5)
+        at TLSSocket._finishInit (_tls_wrap.js:794:8)
+    Emitted 'error' event on Request instance at:
+        at TLSWrap.ssl.onhandshakedone (_tls_wrap.js:608:12)
+        at Request.onRequestError (C:\Users\daniel.buitrago\AppData\Roaming\npm\node_modules\protractor\node_modules\request\request.js:881:8)
+        at ClientRequest.emit (events.js:215:7)
+        at TLSSocket.socketErrorListener (_http_client.js:406:9)
+        at TLSSocket.emit (events.js:210:5)
+        at emitErrorNT (internal/streams/destroy.js:92:8)
+        at emitErrorAndCloseNT (internal/streams/destroy.js:60:3)
+        at processTicksAndRejections (internal/process/task_queues.js:80:21) {
+      code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY'
+    }
+
+    SLN: webdriver-manager update --ignore_ssl
+    
+2. E/launcher - session not created: This version of ChromeDriver only supports Chrome version 79
+
+    SLN : Update the Chrome Borwser version (no el driver el browser normal)
+	
+Links to Asynchronus javaScript
+    
+        https://spin.atomicobject.com/2014/12/17/asynchronous-testing-protractor-angular/
+        https://www.sohamkamani.com/blog/2016/03/14/wrapping-your-head-around-async-programming/
+        https://bridge360blog.com/2015/05/05/improving-protractor-tests-using-shared-functions-and-promises/
+        
+    Link download chrome driver
+    
+        https://sites.google.com/a/chromium.org/chromedriver/downloads
+    
+    Page with page with different stacks to test (angular, php, etc)
+    
+        (user : daniel.buitrago@globant.com)
+        http://rahulshettyacademy.com/
+        https://www.rahulshettyacademy.com/#/practice-project
