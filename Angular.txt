@@ -429,7 +429,7 @@ The most important @NgModule decorator annotates the top-level AppModule class.
 			element: {type: string, name: string, content: string};
 		}
 		
-	. Using the '@Input()' decorator the attribute can be expose to the outside
+	. Using the '@Input()' decorator the attribute can be expose to the outside and receive information
 	
 		@Input() element: {type: string, name: string, content: string};
 		
@@ -443,4 +443,214 @@ The most important @NgModule decorator annotates the top-level AppModule class.
 			server-element.component.html
 			<app-server-element *ngFor="let serverElement of serverElements" 
 								[srvElement]="serverElement">
-			
+	
+    
+    
+    View Encapsulation
+    
+    encapsulation: ViewEncapsulation.None
+    
+        @Component({
+          selector: 'app-server-element',
+          templateUrl: './server-element.component.html',
+          styleUrls: ['./server-element.component.css'],
+          encapsulation: ViewEncapsulation.None
+        })
+        export class ServerElementComponent {
+        
+        }
+        
+        ViewEncapsulation.NONE: delete the attributes of the components like this '<div _ngcontent-wfn-c0>'
+        
+        <div _ngcontent-wfn-c0="" class="col-xs-12">
+            <app-server-element _ngcontent-wfn-c0="" ng-reflect-element="[object Object]">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Testserver</div><div class="panel-body">
+                        <p>
+                            <strong style="color: red">Just a test!</strong>
+                        </p>
+                    </div>
+                </div>
+            </app-server-element>
+        </div>
+        
+        
+    + create an index inside a for
+    
+    <li class="list-group-item"
+      *ngFor="let number of numbers;let i = index">
+      {{number}}
+      {{i}}
+    </li>
+    
+    
+    Routers
+    
+    . To manage all the routes in your app, you can define a const inside the app-module and register the routers
+    
+        const appRoutes: Routes = [{path: '', component: XXX_Component}, {path: 'home', component: HomeComponent}];
+        Add the RouterModule.forRoot() into the 'imports', the 'forRoot' allows register some routes for our main application
+    
+    @NgModule({
+      declarations: [
+        AppComponent,
+        HomeComponent,
+        UsersComponent,
+        ServersComponent,
+        UserComponent,
+        EditServerComponent,
+        ServerComponent
+      ],
+      imports: [
+        BrowserModule,
+        FormsModule,
+        RouterModule.forRoot(appRoutes)
+      ],
+      providers: [ServersService],
+      bootstrap: [AppComponent]
+    })    
+    
+    
+    To tell Angular in which part of the code (app.compontent.html) add the tag <router-outlet></router-outlet> and angular will display the 
+    correct component
+    
+    Service Worker
+    --------------
+    
+    ng add @angular/pwa
+    ng build --prod 
+        -> open foler 'dist' and you can find the ngsw-worker,js' tha is the worker that will be registered
+        
+    To run the app you need a web server to host your production app, 
+        ng serve --prod not works because it will only build in memory. 
+        So therefore that you should do is install a lightweight node server
+        
+        npm install -g http-server
+        
+        To run only use:
+           $ cd dist/angular-project
+           http-server -p 8081
+           
+        
+    ngws-config.json File
+    
+    installMode: prefetch => means that when your page loads angular/service worker will go ahead and already 
+                            prefetch all the assets which are specified in this group which means it puts.
+                            
+                 lazy => would only load them once you needed them at least once.
+                            The advantage of lazy is of course that you don't occupy all the bandwidth at the
+                            beginning
+    updateMode:         This is important for the case that you're pushing a new version of your angular app
+                        and data for all of your service worker to you server an the user is already browsing on that
+                        server and it will get informed about the new service worker and now the service worker
+                        can already prefetch the update
+                        
+    "dataGroups": [
+        {
+          "name": "endPoint",
+          "urls": [
+            "http://localhost:8082"
+          ],
+          "version": 1,
+          "cacheConfig": {
+            "strategy": "freshness"     _> always try to reach out to the back nad first and only use the cache if you're offline
+                                           or performance tries to get something.
+            "strategy": "performance"   _> onto the screen as quick as possible and it will take max age into account to know whether
+                                            it should absolutely reach out the back end or just use the cache value 
+          }
+        }
+      ]
+      
+      
+      
+    Select active tab in the navbar
+    
+    | home | recipes | shopping-list
+    
+    header.html
+    
+    Using the 'routerLinkActive="<CSSclass>"
+    
+    
+    Forms
+    ---------
+    
+    In Angular you can create a form using the tag 'form' inside the HTML.
+    Each fild needs to implement the attribute 'name' and 'ngModel' and also has a submit button
+    
+    
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" class="form-control" ngModel>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" name="email" class="form-control" ngModel>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" name="secret" class="form-control" ngModel>
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+      
+    
+    + Consult the values of the form
+    
+    In angular you can create a method and to print the values of the form. In Angular you can put the method inside the 
+    form tag using the '(ngSubmit)' attribute by passing the form.
+    
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+
+        
+        onSubmit(form: NgForm) {
+          console.log(form);
+        }
+    
+    . Form object has a lot of field, but the main attribute is 'value' where we can find the form's values
+    
+       ► value: Object
+          username: "something"
+          email: "da@email.com"
+          secret: "teacher"
+    
+    + Adding validations
+    
+    To add a validation you can use the pre-built attributes 'required', 'email', etc ..
+    This allows to the user to submit the form, but in the form attributes you can find that the valid attribute
+    is false is the fild is no correct.
+    
+        
+        <div class="form-group">
+          <label for="email">Mail</label>
+          <input type="email" id="email" name="email" class="form-control" ngModel required email>
+        </div>
+        
+
+        valid: false (form attribute)
+        
+        link to check all the validations : https://angular.io/api/forms/Validators ,  https://angular.io/api?type=directive
+        
+    We can have the same valid attribute but for specific formControl
+    
+        ► controls: Object
+           ▼ email: FormControl
+                value: "asdsd"
+                valid: false
+
+    Angular dynamically add some CSS Classes to the HTML given us information about the status of the individual control
+    
+    
+        class="form-control ng-invalid ng-dirty ng-touched"
+        
+        <input _ngcontent-fjq-c0="" class="form-control ng-invalid ng-dirty ng-touched" email="" id="email" name="email" ngmodel="" required="" type="email" ng-reflect-required="" ng-reflect-email="" ng-reflect-name="email" ng-reflect-model="">    
+    
+    
+    

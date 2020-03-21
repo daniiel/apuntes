@@ -1,0 +1,168 @@
+
+    FormArray
+    ----------
+    
+    export class SkillsComponent {
+      skills = new FormArray([]);
+    }
+    
+    - We create a FormArray instance and pass an empty array as the initial state value.
+    
+        {
+          controls: [],
+          valid: true,
+          disabled: false,
+          value: [],
+          invalid: false,
+          ...
+        }
+    
+    - Now, let’s add a new skill to our collection
+    
+        export class SkillsComponent {
+          skills = new FormArray([]);
+
+          addSkill() {
+            this.skills.push(new FormControl(''));
+          }
+        }
+    
+    - Each time we invoke the addSkill method, we push a new FormControl to the controls array.
+    
+        <div *ngFor="let control of skills.controls; index as i">
+          ...
+        </div>
+
+    - Then, we pass each control to the formControl directive so that we can sync each control to a
+    corresponding elemen
+    
+        <div *ngFor="let control of skills.controls; index as i">
+          <input [formControl]="skills.controls[i]" />
+        </div>
+        
+    
+    + Remove the matching AbstractControl.
+     
+        removeSkill(index: number) {
+          this.skills.removeAt(index);
+        }
+        
+    + Clear, Removes all the elements from the array
+    
+        clear() {
+          this.skills.clear();
+        }
+        
+    + Get, Returns the AbstractControl at the given index in the array
+    
+        // return the first control
+        getFirst() {
+          return this.skills.get(0);
+        }
+    
+    
+    Insert A FormGroup
+    -------------------
+    
+    Let's see how we manage 'FormGroup' objects within a FormArray
+    
+        export class SkillsComponent {
+          skills = new FormArray([]);
+
+          addSkill() {
+            const group = new FormGroup({
+              level: new FormControl(''),
+              name: new FormControl('')
+            });
+
+            this.skills.push(group);
+          }
+        }
+    
+        <div *ngFor="let skill of skills.controls">
+          <ng-container [formGroup]="skill">
+            <input formControlName="level" />
+            <input formControlName="name" />
+          </ng-container>
+        </div>
+    
+    We loop over each control, which in this example is a FormGroup, and pass it to the formGroup directive. 
+    Then, it’s just a matter of syncing the FormGroup controls in the way we’re already familiar with — passing the relevant control name to the formControlName directive.
+    
+    
+    
+    FormArray in a FormGroup
+    ------------------------
+    
+    We usually employ a FormGroup that contains a FormArray
+    
+        export class UserComponent {
+          user = new FormGroup({
+            name: new FormControl(''),
+            skills: new FormArray([])
+          });
+        }
+        
+        <form [formGroup]="user">
+          <input formControlName="name" />
+        </form>
+        
+    We apply the formGroup directive to the form in the template, and inside it, we bind the name control via the formControlName directive. Similarly, 
+    We’d like to bind the controls of our FormArray. To do so, we need to follow 3 steps    
+    
+        <form [formGroup]="user">
+          <input formControlName="name" />
+
+          <ng-container formArrayName="skills">
+            ...
+          </ng-container>
+        </form>
+    
+        First, we need to apply the formArrayName to a container element. Under the hood, it’s the same as running user.get('skills').
+    
+    
+        Next, like the previous example, we need to loop over the FormArray controls
+        
+        <form [formGroup]="user">
+          <input formControlName="name" />
+
+          <ng-container formArrayName="skills">
+            <div *ngFor="let skill of skills.controls">
+              ...
+            </div>
+          </ng-container>
+        </form>
+        
+        
+    let’s define the skills property in our component. The traditional way to do it is by using a getter function that obtains a reference to the FormArray control from the parent FormGroup
+    
+    
+        export class UserComponent {
+          user = new FormGroup({
+            name: new FormControl(''),
+            skills: new FormArray([])
+          });
+
+          get skills() {
+            return this.user.get('skills') as FormArray;
+          }
+        }
+        
+        Or we can hold it in a property
+        
+        export class UserComponent {
+          user = new FormGroup({
+            name: new FormControl(''),
+            skills: new FormArray([])
+          });
+
+          skills = this.user.get('skills') as FormArray;
+        }
+    
+    
+    
+    
+    
+    
+    
+    
