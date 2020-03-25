@@ -1,0 +1,581 @@
+
+        Microservices
+        =============
+        
+    - Spring Boot
+    - Spring Cloud
+    
+    
+    Instalacion tools & Troubleshooting 
+    
+    - repositorio
+        https://github.com/in28minutes/spring-microservices/        
+    - Instalacion Java, Eclipse y Maven embebido en Eclipse
+        https://www.youtube.com/playlist?list=PLBBog2r6uMCSmMVTW_QmDLyASBvovyAO3
+        
+        - example project configuration
+        
+            . go to spring initializr with the parameters:
+            
+                . Project: maven project
+                . language: java
+                . spring boot: 2.2.5
+                . dependencies: web
+                
+            . download the .zip file / extract the content
+            . go to Eclipse > import > Existing Maven project > (browse) .jar file
+            . open project > src/main/java> com.anything.. > DemoApplication.java > Run as > 1. Java Aplication
+        
+    Definiciones
+    
+    - Web Service
+        . Un servicio que es entregado sobre la web
+        
+        (Web service - W3C definition)
+        . Sistema de software diseñado para soportar interacciones interoperables machine-to-machine sobre una red.
+            
+        - 3 Keys
+            . Diseñado para interacciones machine-to-machine (application-to-application).
+            . Deberia ser interoperable - no dependiente de la plataforma / lenguaje
+            . Deberia permitir la comunicacion sobre una red
+        
+        
+                App Java    ----
+                                |
+                App .Net    ---- ----> TodoService
+                                |
+                App Php     ----
+                
+                
+                Independiente de su tecnologia estas app deberian ser capacez de hablar con TodoService application
+                
+        - How? questions
+        
+            . How does data exchange between applications take place?
+            
+                the input to a web service is called a 'Request'
+                the output from a web service is called a 'Response'
+                
+                          Request
+                        ----------->
+                App A                  Web service
+                        <-----------
+                          Response
+                
+                Si la App A crea un request diciendo "OK, Necesito los detalles de un curso"
+                Web Service miraria la solicitud, la procesaria y deberia crear una respuesta con la lista
+                de cursos y retornar estos.
+                
+            . How can we make web services platform independent?
+            
+                Usando intercambio de datos en formatos como XML y JSON.
+                
+                El Request y Response deberian estar en un formato el cual esta soportado por todos los 
+                diferentes tipos de plataforma
+                
+                Hay 2 formatos de Request y Response:
+                    
+                    . XML
+                    
+                        <getCourseDetailsRequest>
+                            <id>Course1</id>
+                        </getCourseDetailsRequest>
+                    
+                    . JSON (Javascript object notation)
+                    
+                        [
+                            {
+                                "id": 1,
+                                "name": "Even",
+                                "birthDate": "2017-07-10T07:52:48.270"
+                            }
+                        ]
+                        
+            . How does the Application a know the format of Request and Response?
+            
+                La solucion a esto es "service definition". Cada web services ofrece un service definition.
+                
+                
+                                        - Request/Response Format     (Is a XML? Is a JSON?)
+                                
+                                        - Request Structure           (How can a consumer create a request?)
+                Service Definition:                
+                                        - Response Structure          (How is the response of the web service?)
+                                
+                                        - Endpoint                    (How to call the service, Where is the service 
+                                                                       available)
+
+        - Key Terminology
+
+            . Request and Response:         Input / Output of a web service
+            
+            . Message Exchange format:      formato de intercambio del request y response. Is XML or JSON
+                
+            . Service Provider or 'server': Is the one which hosts the web service (aloja el servicio web)
+            
+            . Service Consumer or 'Client': Is the one which is consuming the web service
+            
+            . Service Definition:           Define the contract between the service provider an the service consumer
+            
+            . Transport:                    Define a service is call, using HTTP and MQ
+                
+                - Is the service exposed over internet I'll be given a URL and I'll call it
+                  Just like you type an URL in the browser, in a similar way App would call 
+                  the web service.
+                    
+                - Or is the service exposed over a Queue, communication and transport is over a Queue
+                    
+                     Service                        Service
+                    Requestor                       Provider
+                        ^                               ^
+                        |                               |
+                        |                               |
+                         <----------------------------->
+                                   WebShepre MQ
+                                   
+                    1. El solicitante del servicio colocaria un mensaje en la cola.
+                    2. El proveedor de servicio estaria escuchando en la cola
+                    3. Tan pronto haya una solicitud en la cola, tomará la solicitud, la procesara, creara la
+                        respuesta, y la volvera a colocar en la cola y el solicitante del servicio obtendra la 
+                        repuesta de la cola.
+                        
+                        El transporte que se utiliza es MQ
+                                
+                            
+        - Web service Groups
+        
+            . SOAP-based
+            . REST-styled
+            
+            ".. SOAP and REST are not really comparable.."
+            
+            REST define un enfoque Arquitectural
+            SOAP plantea restricciones en el formato de XML el cual es intercambiado entre su proveedor de servicio
+            y el consumidor
+            
+            ====================================
+             SOAP Simple Object Access Protocol
+            ====================================
+            
+            Defines a specific way of building web services. Use XML as the request exchange format
+            
+            
+                          XML Request
+                        -------------->
+                Facebook                 Todo Application
+                        <--------------
+                          XML Response
+                          
+                    <getCourseDetailsRequest>
+                        <id>Course1</id>
+                    </getCourseDetailsRequest>
+                    
+            *NOTA: Si las aplicaciones usan XML para intercambiar informacion no es suficiente para ser SOAP.
+                   SOAP define una estructura de Request y Response XML especifica :
+            
+                SOAP-ENV: Envelope (envoltura/sobre)
+                
+                    SOAP-ENV: Header
+                    SOAP-ENV: Body
+                    
+                    SOAP - header: contains meta information like authentication, authorization
+                                   signatures and things like that
+                    SOAP - body: is where you put the real content of your request or your response
+                
+            * REQUEST                            
+                                        
+                <SOAP-ENV:Envelope xmlns:SOAPENV="http://schemas.xmlsoap.org/soap/envelope/">
+                    <SOAP-ENV:Header/>
+                    <SOAP-ENV:Body>
+                        <ns2:GetCourseDetailsRequest xmlns:ns2="http://in28minutes.com/courses">
+                            <ns2:id>Course1</ns2:id>
+                        </ns2:GetCourseDetailsRequest>
+                    </SOAP-ENV:Body>
+                </SOAP-ENV:Envelope>
+            
+            * RESPONSE
+            
+                <SOAP-ENV:Envelope xmlns:SOAPENV="http://schemas.xmlsoap.org/soap/envelope/">
+                    <SOAP-ENV:Header/>
+                    <SOAP-ENV:Body>
+                        <ns2:GetCourseDetailsResponse xmlns:ns2="http://in28minutes.com/courses">
+                            <ns2:CourseDetails>
+                                <ns2:id>Course1</ns2:id>
+                                <ns2:name>Spring</ns2:name>
+                                <ns2:description>10 Steps</ns2:description>
+                            </ns2:CourseDetails>
+                        </ns2:GetCourseDetailsResponse>
+                    </SOAP-ENV:Body>
+                </SOAP-ENV:Envelope>   
+                    
+            
+            RESUMEN SOAP
+        -----------------------------
+            . Define a format
+                
+                SOAP XML Request
+                SOAP XML Response
+                
+            . Transport (doesn't have restriction, you can use either)
+                
+                HTTP or MQ
+                
+            . Service Definition tipically done using WSDL.
+                
+                WSDL    (Web Service Definition Language)
+                
+
+                WSDL Defines the end point.    
+                    
+                                - Endpoint            (Where your service is exposed)
+                            
+                                - All Operations      (Get all codes details, CRUD operations, etc)
+                    WSDL
+                                - Request Structure
+                            
+                                - Response Structure
+
+
+        ** SOAP IS ALL ABOUT ADHERING TO THE SERVICES XML STRUCTURE. ADHERING TO THE ENVELOP HEADER AND THE BODY **
+
+        
+            ======================================
+             REST REpresentational State Transfer
+            ======================================
+        
+                REST would want to make best use of his HTPP
+                
+             -------------------------------------------------------------------
+            |                               REST                                |
+             -------------------------------------------------------------------    
+            |                               HTTP                                |
+             -------------------------------------------------------------------
+            |    HTTP Methods (GET,PUT POST..) | HTTP Status Codes (200, 404)   |
+             -------------------------------------------------------------------
+            
+                             Request
+                         -------------->               The requests and reponses are in format which is defined 
+                Browser                  Server        by HTTP. Hyper Tex Transfer Protocol
+                         <--------------
+                             Response
+                             
+                                                        1. Cuando se escribe una URL en el browser, este envia a GET request
+                                                            a ese servidor
+                                                        2. El servidor responde con un HTTP response containing the HTML
+                                                        3. The browser looks at the response, takes the HTML and displays it on
+                                                            the screen.
+                                                        
+                HTTP verbs (metodos de peticion), GET, POST, DELETE, PATCH, etc..
+            
+                - GET:  I'm trying to get the details of something
+                - POST: I'm trying to create something
+                - PUT:  I'm trying to update something
+                
+                HTTP Status
+                
+                - 200: it was successful
+                - 404: page not found
+                
+                RESTful web services try to define services using the different concepts that are already present
+                in HTTP.
+
+                
+            - Key Abstraction - resource
+            
+                ** RESOURCE: anything that you'd want to expose to the outside world through your application
+            
+                . A resource has an URI (Uniform Resource Identifier)
+                    - /user/Ranga/todo/3
+                    - /user/Ranga/
+                    
+                . A resource can have different representations
+                    - XML
+                    - HTML
+                    - JSON
+                    
+                    Example
+                
+                . Create a User  - POST /users
+                . Delete a User  - DELETE /users/1
+                . Get all Users  - GET /users
+                . Get one User   - GET /users/1
+                
+                
+                The important thing about REST is the fact that you have to think in terms of the resources. Other thing is make use of the HTTP.
+                
+                    REST
+                -------------------------------
+                    
+                . Data exchange format
+                
+                    - No restriccion. JSON is poppular
+                    
+                . Transport
+                
+                    - Only HTTP
+                    
+                . Service Definition
+                
+                    - No standard. Swagger / WADL (Web Application Definition Language) /..
+                    
+                    
+             REST vs SOAP
+            -------------------
+            
+            . Esta comparacion no se puede hacer pensando en que son dos cosas similares manzanas con manzanas porque SOAP
+                es un formato de XML mientras REST es un estilo de arquitectura.
+                
+            - Restrictions vs Architectural Approach
+            
+            - Data Exchange Format
+                . In SOAP the data exchange format is always XML with SOAP envelope header and body
+                . In REST there is no restriction data exchange format, you can exchange a XML, JSON or any other format
+                
+            - Service Definition
+                . SOAP uses WSDL
+                . REST doesn't have a standard definition language. While WADL is one of the standards, it is not really popularly.
+                        SWAGGER is other standard
+                        
+            - Transport
+                . SOAP doesn't pose any restrictions at all. You can use web that is HTTP or you can use MQ
+                . REST is very specific about making the best use of the HTTP protocol
+                
+            - Ease of implementation
+                . RESTful services are tipically more easier to implement than SOAP
+                
+
+                            SOAP                            |                   REST
+                                                            |
+            -------------------------------------------------------------------------------------------------                                          
+            - Es un protocolo para el intercambio de datos  |   - Es una arquitectura que utiliza el protocolo
+                                                            |       HTTP para el intercambio de datos.
+                                                            |
+            - Usa el WSDL para exponer los metodos y deta-  |   - Expone los metodos a traves de URIs
+                lles tecnicas                               |
+                                                            |
+            - Los servicios web y sus clientes usan WSDL    |   - No existen contratos entre el servidor y el 
+                como contrato                               |       cliente
+            --------------------------------------------------------------------------------------------------
+            - Los servicios web estan altamente acoplados   |   - Los servicios presentan bajo acoplamiento
+                con el cliente, debido a la existencia de   |
+                contrato                                    |
+                                                            |
+            - Es complicado mantenerlos dado que un cambio  |    - Faciles de mantener, debido a que al agregar 
+                en el WSDL,requiere la modificacion del     |       un nuevo metodo, no es necesario hacer cambios 
+                del cliente.                                |       en los clientes del servicio web
+
+
+
+    Spring Initializr
+    ==================
+    
+    1. We'll use start.spring.io to initialize our sring project.
+    
+        features:
+        
+            - Maven project
+            - Java language
+            - Spring Boot 2.2.1 or later
+            - Group : com.dnl.webservices
+            - Artefact: restful-web-services
+            - Dependencies: web (full-stack web ..), devTools, JPA, H2
+            
+   
+    2. README
+
+        #RESTful web service
+        
+        Social Media Application
+        
+        User (1)  -->  Posts (*)
+        
+        - Retrive all users         - GET    /users
+        - Create a user             - POST   /users
+        - Retrieve one user         - GET    /users/{id} -> /users/1
+        - Delete a user             - DELETE /users/{id} -> /users/1
+            
+            
+        - Retrieve all posts for a user - GET    /users/{id}/posts
+        - Create a posts for a user     - POST   /users/{id}/posts
+        - Retrieve details of a posts   - GET    /users/{id}/posts/{post_id}
+            # Un post no puede existir sin un usuario
+            # Cuando se mapean recursos, tambien tenemos esto en consideración 
+            
+    3. Request mapping method
+    
+        /**
+         * GET
+         * URI - /hello-world
+         * method - "helloWorld"
+         */
+
+        @RequestMapping(method= RequestMethod.GET, path = "/hello-world")
+        public String helloWorld() {
+            return "Hello World";
+        }
+        
+        ** We can improve this further
+        
+        Insted of @RequestMapping use @GetMapping, and I don't need to put the method attribute
+        
+        @GetMapping(path = "/hello-world")
+        public String helloWorld() {
+            return "Hello World";
+        }
+        
+    4. POST action (Postman)
+    
+        download the postman extension for chrome
+        
+        1. send a GET request 
+        
+            - GET     localhost:8080/users/1
+            
+                {
+                    "id": 1,
+                    "name": "Escanor",
+                    "birthDate": "2019-11-29T03:11:17.119+0000"
+                }
+            
+            - POST    localhost:8080/users
+                - select "Body" / "raw" and paste the previous JSON
+                    - Change the "text" option to JSON
+                
+                {
+                    "name": "Escanor",
+                    "birthDate": "2019-11-29T03:11:17.119+0000"
+                }
+            
+            - GET     localhost:8080/users (review the new user)
+            
+    5. Send the response status of the creation request
+    
+        .. I would want to set the return..
+        
+        ResponseEntity.create().build(uri); -> return a created status
+        
+        - one of the key part of creating resources is returning the correct response status back
+        - we returned a proper response status of created when we created the resource.
+        
+        Para que un metodo tenga bn definido el error en caso de suceder, es bueno implementar una Excepcion
+        
+            if (user == null)
+                throw new <name>Exception();
+                
+            e.g. throw new UserNotFoundException("userId: " + userId):
+            
+        y para que la excepcion quede registrada con el codigo de error correcto y no 500 (by default)
+        use the @ResponseStatus Annotacion.
+        
+            @ResponseStatus(HttpStatus.NOT_FOUND)
+            public class UserNotFoundException extends RuntimeException
+        
+        
+        Customizing the exception handling
+        
+        One of the important classes present in spring is 'ResponseEntityExceptionHandler'
+        This is an abstract class which can be extended to provide centralized exception handling.
+        across all the different exception handler methods.
+        
+        - extendiendo esta clase proporcionamos un Customized Exception Handling
+        
+        
+        @ControllerAdvice
+        @RestController
+        public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+        
+            - Esto es un @RestController xq este proporciona una respuesta de vuelta.
+            - @ControllerAdvice it says specialization of the component for classes that
+                declare methods to be shared across multiple controller classes.
+                
+        
+        @Override
+        protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, 
+                    HttpHeaders headers, HttpStatus status, WebRequest request) {
+            ExceptionResponse exceptionResponse =
+                    new ExceptionResponse(new Date(), ex.getMessage(), ex.getBindingResult().toString());
+            return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+        }
+    
+            - ex.getBindingResult : permite devolver que funciono mal (validaciones)
+        
+        
+    - HATEOAS (Hypermedia As The Engine Of Application State)
+	
+		- Add code:
+		
+		implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+		
+	Cuando el servidor devuelva la representacion de un recurso (JSON, XML ...) parte de la informacion
+	devuelta seran identificaores unicos en forma de hipervinculos a otros recursos asociados.
+		
+		
+	@RequestHeader : El parametro va a ser tomado del Header
+		public String helloWorldInternationalized(@RequestHeader Locale locale) {
+		
+		- para pasar este paremetro en PostMan hacer:
+			. Seleccionar el tab "Headers"
+			. En la columna Key colocar "Accept-Language" y el valor "US/FR"
+			
+			public String helloWorldInternationalized(
+					@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+				return messageSource.getMessage("good.morning.message", null, locale);
+			}
+			
+	- Mostrar respuesta en XML
+	
+		solo importar: jackson-dataformat-xml dependency
+	
+	- Swagger Configuration
+	
+	@Configuration
+	@EnableSwagger2
+	public class SwaggerConfig {
+		@Bean
+		public Docket api() {
+			return new Docket(DocumentationType.SWAGGER_2);
+		}
+	}
+	
+	 - http://localhost:8081/v2/api-docs
+	 - http://localhost:8081/swagger-ui.html
+     
+     
+    H2 Database
+    
+    - console: http://localhost:8081/h2-console
+    - jdbc URL: jdbc:h2:mem:testdb
+    
+    
+    Richardson Maturity Model
+    =========================
+    
+    - level 0: Expose SOAP Web Services in REST styled 
+    
+        . http://server/getPosts
+        . http://server/deletePosts
+        . http://server/doThis
+        
+    - level 1: Expose Resources with proper URIs
+        
+        . http://server/accounts
+        . http://server/accounts/10
+        
+    - level 2: level 1 + HTTP Methods
+    
+    - level 3: level 2 + HATEOAS data + Next possible actions
+    
+    
+    Best Practices
+    ==============
+    
+    - Use Nouns for resources
+    - No secure information in URI
+    - Use plurals 
+        Prefer  /users   to /user
+        Prefer  /users/1 to /user/1
+        
+    
+    
+    
+    

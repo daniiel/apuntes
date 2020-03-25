@@ -1,0 +1,375 @@
+    https://www.typescriptlang.org/docs/home
+    https://www.codecademy.com/
+    
+    
+        Angular Concepts
+    
+    + Structural Directives
+    
+        *ngFor, *ngIf are "structural directive". Structural directives shape or reshape the DOM's structure,
+        typically by adding, removing, and manipulating the elements to which they are attached. 
+        Directives with an asterisk, *, are structural directives.
+        
+        - Create an index:
+            
+            *ngFor="let product of products; index as productId"
+    
+    + Interpolation Syntax {{ }}
+            
+        Interpolation {{ }} lets you render the property value as text; 
+        property binding [ ] lets you use the property value in a template expression.    
+    
+    
+    + Event binding
+    
+        Bind the button's click event to the share() method. Event binding uses a set of parentheses, ( ), around the event
+        
+        <button (click)="share()">
+          Share
+        </button>
+        
+    + Components
+    
+        Components define areas of responsibility in the user interface, or UI, that let you reuse sets of UI functionality
+        
+        A component consists of three things:
+
+        . A component class that handles data and functionality. In the previous section, the product data and the share() method in the component class handle data and functionality, respectively.
+        . An HTML template that determines the UI. In the previous section, the product list's HTML template displays the name, description, and a "Share" button for each product.
+        . Component-specific styles that define the look and feel. Though product list does not define any styles, this is where component CSS resides.
+        
+        
+    + @Component() decorator. 
+        
+        This indicates that the following class is a component. It provides metadata about the component, including its selector, templates, and styles.
+
+        The selector identifies the component. The selector is the name you give the Angular component when it is rendered as an HTML element on the page. By convention, Angular component selectors begin with the prefix app-, followed by the component name.
+
+        The template and style filenames reference the HTML and CSS files that StackBlitz generates.
+        
+        
+    + @Input() decorator
+
+        The @Input() decorator indicates that the property value passes in from the component's parent, the product list component.
+        
+        export class ProductAlertsComponent implements OnInit {
+          @Input() product;
+          constructor() { }
+
+          ngOnInit() {
+          }
+
+        }
+        
+        
+        Pass the current product as input to the component using property binding
+        component.html
+        
+        <app-product-alerts [product]="product">
+        </app-product-alerts>
+        
+        
+    + @Output()
+    
+        Define a property named notify with an @Output() decorator and an instance of EventEmitter().
+        This allows the product alert component to emit an event when the value of the notify property changes.
+        
+        export class ProductAlertsComponent {
+          @Input() product;
+          @Output() notify = new EventEmitter();
+        }
+    
+        In the product alert template, product-alerts.component.html, update the "Notify Me" button with an event binding to call the notify.emit() method
+        
+        <p *ngIf="product.price > 700">
+          <button (click)="notify.emit()">Notify Me</button>
+        </p>
+    
+    
+    Angular CLI    
+        
+        When the Angular CLI generates a new component, it includes an empty constructor, the OnInit interface, and the ngOnInit() method. Since the following example isn't using them, they are omitted here for brevity.
+    
+
+    + Angular Router
+    
+        The Angular Router enables you to show different components and data to the user based on where the user is in the application. 
+        The router enables navigation from one view to the next as users perform tasks such as the following:
+
+        Entering a URL in the address bar to navigate to a corresponding page.
+        Clicking links on the page to navigate to a new page.
+        Clicking the browser's back and forward buttons to navigate backward and forward through the browser history.
+        
+        @NgModule({
+          imports: [
+            BrowserModule,
+            ReactiveFormsModule,
+            RouterModule.forRoot([
+              { path: '', component: ProductListComponent },
+              { path: 'products/:productId', component: ProductDetailsComponent },
+            ])
+          ],
+        
+
+        A route associates one or more URL paths with a component
+                
+        <div *ngFor="let product of products; index as productId">
+
+          <h3>
+            <a [title]="product.name + ' details'" [routerLink]="['/products', productId]">
+              {{ product.name }}
+            </a>
+          </h3>
+        </div>
+        
+        - The RouterLink directive gives the router control over the anchor element. In this case, the route, or URL, contains one fixed segment,
+        /products, while the final segment is variable, inserting the id property of the current product. For example, the URL for a product with
+        an id of 1 will be similar to https://getting-started-myfork.stackblitz.io/products/1.
+        
+            examples:
+            
+            - [routerLink]="['/products', productId]"
+            - [routerLink]="['/cart']"
+        
+        
+    + ActivatedRoute
+    
+        The ActivatedRoute is specific to each routed component that the Angular Router loads. It contains information about the route, 
+        its parameters, and additional data associated with the route.
+        
+        
+        ngOnInit() {
+          this.route.paramMap.subscribe(params => {
+            this.product = products[+params.get('productId')];
+          });
+        }
+        
+        The route parameters correspond to the path variables you define in the route. The URL that matches the route provides the productId.
+        Angular uses the productId to display the details for each unique product.
+        
+        
+    + Services
+      ----------------
+      
+        In Angular, a service is an instance of a class that you can make available to any part of your application using Angular's dependency
+        injection system.
+        
+        Services are the place where you share data between parts of your application
+        
+        $ ng g s cart
+        
+        import { Injectable } from '@angular/core';
+
+        @Injectable({
+          providedIn: 'root'
+        })
+        export class CartService {
+
+          constructor() { }
+
+        }
+        
+        
+        Servers often return data in the form of a stream. Streams are useful because they make it easy to transform the returned data and make 
+        modifications to the way you request that data. The Angular HTTP client, HttpClient, is a built-in way to fetch data from external APIs 
+        and provide them to your app as a stream
+        
+        
+    +   configure your app to use HttpClientModule
+
+        Angular's HttpClientModule registers the providers your app needs to use a single instance of the HttpClient service throughout your app.
+
+            Open app.module.ts. (This file contains imports and functionality that is available to the entire app.)
+
+        Import HttpClientModule from the @angular/common/http package.
+        
+            import { HttpClientModule } from '@angular/common/http';
+            
+        Add HttpClientModule to the AppModule @NgModule() imports array to register Angular's HttpClient providers globally.
+        
+        @NgModule({
+          imports: [
+            BrowserModule,
+            HttpClientModule,
+            ReactiveFormsModule,
+            RouterModule.forRoot([
+              { path: '', component: ProductListComponent },
+              { path: 'products/:productId', component: ProductDetailsComponent },
+              { path: 'cart', component: CartComponent },
+            ])
+          ],
+      
+
+        Use:
+        
+            constructor(private http: HttpClient) {}
+            
+            getShippingPrices() {
+                return this.http.get('/Asset/shipping.json'); // REST API
+            }
+            
+
+    + Async pipe
+    
+            <div class="shipping-item" *ngFor="let shipping of shippingCosts | async">
+              <span>{{ shipping.type }}</span>
+              <span>{{ shipping.price | currency }}</span>
+            </div>
+                
+        The async pipe returns the latest value from a stream of data and continues to do so for the life of a given component.
+        When Angular destroys that component, the async pipe automatically stops. 
+        (For detailed information about the async pipe, see the AsyncPipe API documentation.)
+        
+    + Forms in Angular
+    
+        Forms in Angular build upon the standard HTML forms to help you create custom form controls and easy validation experiences. There are
+        two parts to an Angular Reactive form: the objects that live in the component to store and manage the form, and the visualization of 
+        the form that lives in the template
+        
+        
+        Angular's FormBuilder service provides convenient methods for generating controls. As with the other services you've used, you need to import and inject the service before you can use it:
+
+        
+        Import the FormBuilder service from the @angular/forms package.
+
+            import { Component, OnInit } from '@angular/core';
+            import { FormBuilder } from '@angular/forms';
+
+        The ReactiveFormsModule provides the FormBuilder service, which AppModule (in app.module.ts) needs to be imported.
+        
+        
+            @NgModule({
+              imports: [
+                ReactiveFormsModule,
+                HttpClientModule,
+                ...
+        
+        To gather the user's name and address, set the checkoutForm property with a form model containing name and address fields, using the 
+        FormBuilder group() method. Add this between the curly braces, {}, of the constructor
+
+                ...
+                this.checkoutForm = this.formBuilder.group({
+                  name: '',
+                  address: ''
+                });
+                
+        For the checkout process, users need to submit their name and address. When they submit their order, the form should reset and the cart should clear.
+
+        Define an onSubmit() method to process the form. Use the CartService clearCart() method to empty the cart items and reset the form after its submission.
+        In a real-world app, this method would also submit the data to an external server. The entire cart component class is as follows:
+        
+            onSubmit(customerData) {
+                // Process checkout data here
+                this.items = this.cartService.clearCart();
+                this.checkoutForm.reset();
+
+                console.warn('Your order has been submitted', customerData);
+            }
+        
+        On the form tag, use an 'ngSubmit' event binding to listen for the form submission and call the onSubmit() method with the checkoutForm value
+   
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
+            </form>
+            
+        Add input fields for name and address. Use the formControlName attribute binding to bind the checkoutForm form controls for name and address to their input fields
+        
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit(checkoutForm.value)">
+              <div>
+                <label for="name">Name</label>
+                <input id="name" type="text" formControlName="name">
+              </div>
+
+              <div>
+                <label for="address">Address</label>
+                <input id="address" type="text" formControlName="address">
+              </div>
+
+              <button class="button" type="submit">Purchase</button>
+            </form>
+        
+        
+    + Introduction to Angular concepts
+    
+    The architecture of an Angular application relies on certain fundamental concepts. The basic building blocks are NgModules, which provide a compilation
+    context for components. NgModules collect related code into functional sets; an Angular app is defined by a set of NgModules. An app always has at least
+    a root module that enables bootstrapping, and typically has many more feature modules
+    
+        - Components define views, which are sets of screen elements that Angular can choose among and modify according to your program logic and data.
+
+        - Components use services, which provide specific functionality not directly related to views. Service providers can be injected into components
+            as dependencies, making your code modular, reusable, and efficient.
+            
+    An app's components typically define many views, arranged hierarchically. Angular provides the Router service to help you define navigation paths among views.
+    The router provides sophisticated in-browser navigational capabilities
+    
+    + Templates, directives, and data binding
+    
+        A template combines HTML with Angular markup that can modify HTML elements before they are displayed. Template directives provide program logic, and
+        binding markup connects your application data and the DOM. There are two types of data binding:
+
+            - Event binding lets your app respond to user input in the target environment by updating your application data.
+            - Property binding lets you interpolate values that are computed from your application data into the HTML.
+    
+    * Decorators
+        Decorators are functions that modify JavaScript classes. Angular defines a number of decorators that attach specific kinds of metadata to classes,
+        so that the system knows what those classes mean and how they should work.
+    
+    + Services and dependency injection
+    
+    For data or logic that isn't associated with a specific view, and that you want to share across components, you create a service class. A service class
+    definition is immediately preceded by the @Injectable() decorator. The decorator provides the metadata that allows other providers to be injected as
+    dependencies into your class.
+
+    Dependency injection (DI) lets you keep your component classes lean and efficient. They don't fetch data from the server, validate user input, or log directly
+    to the console; they delegate such tasks to services
+    
+    
+    + Routing
+    
+    The Angular Router NgModule provides a service that lets you define a navigation path among the different application states and view hierarchies in your app.
+    It is modeled on the familiar browser navigation conventions:
+
+        - Enter a URL in the address bar and the browser navigates to a corresponding page.
+
+        - Click links on the page and the browser navigates to a new page.
+
+        - Click the browser's back and forward buttons and the browser navigates backward and forward through the history of pages you've seen.
+        
+        
+    The router maps URL-like paths to views instead of pages. When a user performs an action, such as clicking a link, that would load a new page in the browser,
+    the router intercepts the browser's behavior, and shows or hides view hierarchies.
+    
+    
+    The router interprets a link URL according to your app's view navigation rules and data state. You can navigate to new views when the user clicks a button 
+    or selects from a drop box, or in response to some other stimulus from any source. 
+    
+    ** The router logs activity in the browser's history, so the back and forward buttons work as well
+    
+    
+    + NgModule metadata
+    
+        An NgModule is defined by a class decorated with @NgModule(). The @NgModule() decorator is a function that takes a single metadata object, whose properties
+        describe the module. The most important properties are as follows.
+        
+        
+        declarations: The components, directives, and pipes that belong to this NgModule.
+
+            - exports: The subset of declarations that should be visible and usable in the component templates of other NgModules.
+
+            - imports: Other modules whose exported classes are needed by component templates declared in this NgModule.
+
+            - providers: Creators of services that this NgModule contributes to the global collection of services; they become accessible in all parts of the app. (You can also specify providers at the component level, which is often preferred.)
+
+            - bootstrap: The main application view, called the root component, which hosts all other app views. Only the root NgModule should set the bootstrap property.
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            

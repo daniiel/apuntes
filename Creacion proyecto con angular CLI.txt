@@ -1,0 +1,42 @@
+
+    FIRST APP ANGULAR Using Angular CLI
+    
+    1. Creacion del proyecto
+      
+        ng new my-store
+        ng serve --open
+    
+    2. Creacion de componentes
+        
+        ng g c top-bar
+        ng g c product-list
+        
+    3. Redirigir la app al product-list component
+    
+        . Modificar app.component.html
+        
+            Eliminar todo el codigo presente y colocar el siguiente:
+            
+            
+            <app-top-bar></app-top-bar>
+            
+            <div class="container">
+                <router-outlet></router-outlet>
+            </div>
+            
+            
+        . Agregar el RouterModule al app.module.ts
+        
+        
+            import { RouterModule } from '@angular/router';
+            
+            
+            @NgModule({
+              imports: [
+                BrowserModule,
+                RouterModule.forRoot([
+                  { path: '', component: ProductListComponent }
+                ])
+              ],
+        
+            Aqui el path '' hace la redireccion cuando la pagina carga al componente ProductList
