@@ -9,7 +9,7 @@
     Instalacion tools & Troubleshooting 
     
     - repositorio
-        https://github.com/in28minutes/spring-microservices/        
+        https://github.com/in28minutes/spring-microservices/ 
     - Instalacion Java, Eclipse y Maven embebido en Eclipse
         https://www.youtube.com/playlist?list=PLBBog2r6uMCSmMVTW_QmDLyASBvovyAO3
         
@@ -35,6 +35,7 @@
         . Sistema de software diseñado para soportar interacciones interoperables machine-to-machine sobre una red.
             
         - 3 Keys
+        
             . Diseñado para interacciones machine-to-machine (application-to-application).
             . Deberia ser interoperable - no dependiente de la plataforma / lenguaje
             . Deberia permitir la comunicacion sobre una red
@@ -369,14 +370,14 @@
     Spring Initializr
     ==================
     
-    1. We'll use start.spring.io to initialize our sring project.
+    1. We'll use start.spring.io to initialize our spring project.
     
         features:
         
-            - Maven project
+            - Maven project / Gradle
             - Java language
             - Spring Boot 2.2.1 or later
-            - Group : com.dnl.webservices
+            - Group : com.webservices
             - Artefact: restful-web-services
             - Dependencies: web (full-stack web ..), devTools, JPA, H2
             
@@ -389,47 +390,141 @@
         
         User (1)  -->  Posts (*)
         
-        - Retrive all users         - GET    /users
-        - Create a user             - POST   /users
-        - Retrieve one user         - GET    /users/{id} -> /users/1
-        - Delete a user             - DELETE /users/{id} -> /users/1
+        - Retrive all users             - GET    /users
+        - Create a user                 - POST   /users
+        - Retrieve one user             - GET    /users/{id} -> /users/1
+        - Delete a user                 - DELETE /users/{id} -> /users/1
             
             
         - Retrieve all posts for a user - GET    /users/{id}/posts
         - Create a posts for a user     - POST   /users/{id}/posts
         - Retrieve details of a posts   - GET    /users/{id}/posts/{post_id}
+        
             # Un post no puede existir sin un usuario
             # Cuando se mapean recursos, tambien tenemos esto en consideración 
             
-    3. Request mapping method
     
-        /**
-         * GET
-         * URI - /hello-world
-         * method - "helloWorld"
-         */
+    3. REST code
+    
 
-        @RequestMapping(method= RequestMethod.GET, path = "/hello-world")
-        public String helloWorld() {
-            return "Hello World";
+        import org.springframework.web.bind.annotation.GetMapping;
+        import org.springframework.web.bind.annotation.RestController;
+
+        @RestController
+        public class HelloWorldController {
+            
+            /*
+            * GET
+            * URI: /hello-world
+            * */
+            @GetMapping("/hello-world")
+            public String helloWorld() {
+                return "hello world";
+            }
+        }
+    
+    
+        . @RestController: Handle REST request
+        . @GetMapping: 
+                Creates a mapping between the GET method y the URI '/hello-world'
+                Same than @RequestMapping(method = RequestMethod.GET, path = "/hello-world")
+    
+    
+        ** Background Process
+        
+        1. We used Spring Boot to create the project Thought the spring-boot-starter-projects
+        2. we are using frameworks like Spring, Spring MVC
+    
+    
+    + GetBean Request
+    
+        (HelloWorlBean.java)
+        
+        public class HelloWorldBean {   
+            private String message;
+
+            public HelloWorldBean(String message) {this.message = message;}
+            public String getMessage() {return message;}
+            public void setMessage(String message) {this.message = message;}
+
+            @Override
+            public String toString() {
+                return String.format("HelloWorldBean [message=%s]", message);
+            }
+        }
+
+    
+        (HelloWorldController.java)
+        
+        @GetMapping("/hello-world-bean")
+        public HelloWorldBean helloWorldBean() {
+            return new HelloWorldBean("hello world!");
         }
         
-        ** We can improve this further
         
-        Insted of @RequestMapping use @GetMapping, and I don't need to put the method attribute
+        Response http://localhost:8080/hello-world-bean
         
-        @GetMapping(path = "/hello-world")
-        public String helloWorld() {
-            return "Hello World";
+        {
+            message: "hello world!"
         }
+    
+        
+        . The response is a JSON message
+        . The JSON reflects the structure of the HelloWorldBean
+            - String message attribute
+            
+            
+        ** Part of the @RestController it has the @ResponseBody annotation, this annotation responses from
+            that would be mapped by a message convertor into some other format
+            
+            
+    + PathVariable
+    
+        @GetMapping("/hello-world/path-variable/{name}")
+        public HelloWorldBean helloWorldPathVariable(@PathVariable String name) {
+            return new HelloWorldBean(String.format("hello world!, %s", name));
+        }
+        
+        . @PathVariable: Allow us to get the parameter that is inside the URL '{name}'
+            
+    + Modify the log level of the application
+    
+        . application.properties
+        
+            logging.level.org.springframework = debug
+            
+    + Create a DAO
+    
+        @Component
+        public class UserDaoService {
+            ...
+            
+            public User findAll() {...}
+            public User finById(int userId) {...}
+            public User createUser(User user) {...}
+            
+        }
+    
+        . @Component, it will be managed by spring
+        . This is something which would be talking to the database
+        . We could add @Repository on it as well because it talks to the database,
+            but we are using a simple array
+        
+    + See the request into the browser
+    
+        . go to http://localhost:8080/users
+        . press F12, and select the 'network' tab, refreshing the page
+        . search / select 'users'.
+            Here you can see the request header and also the response
+        
         
     4. POST action (Postman)
     
-        download the postman extension for chrome
+        Download the postman desktop application
         
         1. send a GET request 
         
-            - GET     localhost:8080/users/1
+            . GET     localhost:8080/users/1
             
                 {
                     "id": 1,
@@ -437,25 +532,62 @@
                     "birthDate": "2019-11-29T03:11:17.119+0000"
                 }
             
-            - POST    localhost:8080/users
-                - select "Body" / "raw" and paste the previous JSON
-                    - Change the "text" option to JSON
+            . POST    localhost:8080/users
+            
+                1. select the pane "Body" > "raw" and paste the following JSON
                 
-                {
-                    "name": "Escanor",
-                    "birthDate": "2019-11-29T03:11:17.119+0000"
-                }
+                    {
+                        "name": "Escanor",
+                        "birthDate": "2019-11-29T03:11:17.119+0000"
+                    }
+                
+                2. Change the "text" option to JSON (application/json)
+                
+                
+                Response:
+                
+                "error": "Internal Server Error",
+                "message": "Type definition error: [simple type, class com.webservices.restfulwebservices.entity.User]; nested exception is com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of `com.webservices.restfulwebservices.entity.User` (no Creators, like default construct, exist): cannot deserialize from Object value (no delegate- or property-based Creator)\n at [Source: (PushbackInputStream); line: 2, column: 5]"
+                
+                
+                ** With the recent JSON & sring boot versions, the default constructor is no longer needed!
+                
+                Solution:
+                
+                    . Create a constructor with no argument for the User class
+                
             
-            - GET     localhost:8080/users (review the new user)
+                3. GET     localhost:8080/users (review the new user)
             
-    5. Send the response status of the creation request
+            
+    5. Response Status, of the creation request
     
-        .. I would want to set the return..
+        1. I would want to set the return
         
-        ResponseEntity.create().build(uri); -> return a created status
+            
+            ResponseEntity.create(<location>)   -> return a created status
+            
+                . <location> What was the location of the resource which was created
         
-        - one of the key part of creating resources is returning the correct response status back
-        - we returned a proper response status of created when we created the resource.
+        . ResponseEntity is part of the Spring Framework
+        . One of the key part of creating resources is returning the correct response status back
+        . We returned a proper response status of created when we created the resource.
+        
+        2. How to create the location of the resource created
+        
+                @PostMapping("/users")
+                public ResponseEntity<Object> createUser(@RequestBody User user) {
+                    User userCreated = daoService.addUser(user);
+                    // Take the current URL '/users' and append '{userId}' -> '/users/{userId}'
+                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                            .path("/{userId}").buildAndExpand(userCreated.getId()).toUri();
+
+                    return ResponseEntity.created(uri).build();
+                }
+                
+                . fromCurrentRequest(): Avoid to hardcode '/users' path
+                . path(location):   Allows to append something to the URI, we put a variable ' {userId}'
+                . buildAndExpand(value): Replace the variable with the value
         
         Para que un metodo tenga bn definido el error en caso de suceder, es bueno implementar una Excepcion
         
@@ -474,8 +606,7 @@
         Customizing the exception handling
         
         One of the important classes present in spring is 'ResponseEntityExceptionHandler'
-        This is an abstract class which can be extended to provide centralized exception handling.
-        across all the different exception handler methods.
+        This is an abstract class which can be extended to provide centralized exception handling across all the different exception handler methods.
         
         - extendiendo esta clase proporcionamos un Customized Exception Handling
         
@@ -484,7 +615,7 @@
         @RestController
         public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
         
-            - Esto es un @RestController xq este proporciona una respuesta de vuelta.
+            - @RestController xq este proporciona una respuesta de vuelta.
             - @ControllerAdvice it says specialization of the component for classes that
                 declare methods to be shared across multiple controller classes.
                 
@@ -492,56 +623,249 @@
         @Override
         protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, 
                     HttpHeaders headers, HttpStatus status, WebRequest request) {
-            ExceptionResponse exceptionResponse =
-                    new ExceptionResponse(new Date(), ex.getMessage(), ex.getBindingResult().toString());
+            ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), ex.getBindingResult().toString());
             return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     
             - ex.getBindingResult : permite devolver que funciono mal (validaciones)
         
         
-    - HATEOAS (Hypermedia As The Engine Of Application State)
+    + HATEOAS (Hypermedia As The Engine Of Application State)
+    
+        Cuando el servidor devuelva la representación de un recurso (JSON, XML…) parte de la información devuelta 
+        serán identificadores únicos en forma de hipervínculos a otros recursos asociados.
 	
-		- Add code:
+		. Add the dependency
 		
-		implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+            implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 		
 	Cuando el servidor devuelva la representacion de un recurso (JSON, XML ...) parte de la informacion
-	devuelta seran identificaores unicos en forma de hipervinculos a otros recursos asociados.
+	devuelta seran identificadores unicos en forma de hipervinculos a otros recursos asociados.
 		
-		
-	@RequestHeader : El parametro va a ser tomado del Header
-		public String helloWorldInternationalized(@RequestHeader Locale locale) {
-		
-		- para pasar este paremetro en PostMan hacer:
-			. Seleccionar el tab "Headers"
-			. En la columna Key colocar "Accept-Language" y el valor "US/FR"
-			
-			public String helloWorldInternationalized(
-					@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+    
+    En las versiones recientes de spring Hateoas hubo algunos renombreamientos de clases importantes que pueden 
+    ser encontrados en el link : https://docs.spring.io/spring-hateoas/docs/current/reference/html/#migrate-to-1.0.changes.representation-models
+        
+        . We will modify the method to insert a link to all users.
+           Add a link to refer all the users paths ('serverPath/users'). The link is that the method 'findAllUsers' expose
+        
+            @GetMapping("/users/hateoas/{userId}")
+            public EntityModel<User> hateoasFindUserById(@PathVariable Integer userId) {
+                User user = daoService.findById(userId);
+                if (user == null) {
+                    throw new UserNotFoundException("Not found user by userId: " + userId);
+                }
+                EntityModel<User> entityModel = new EntityModel<>(user);
+                entityModel.add(
+                        linkTo(methodOn(this.getClass()).findAllUsers()).withSelfRel());
+
+                return entityModel;
+            }
+            
+            
+            1. The previous method return an User plus a link that refers the '/users'
+            2. EntityModel<User>: Wrapping a model object and with the '.add' option we put a link inside the object
+            3. linkTo(): Refers what is the link that you want to add
+            4. methodOn(this.getClass()).findAllUsers()): espcify which is the class and which is the method that 
+                has the getMapping that you want to add as a link.
+            5. withSelfRel(): put the 'self' attribute to refer the link, optional, you can user withRef("<name>") to put a specific attribute name
+	
+        . Response example:
+
+             GET http://localhost:8085/users/hateoas/1
+
+                {
+                    "id": 1,
+                    "name": "Merlin",
+                    "birthDate": "2020-03-29T00:34:13.350+0000",
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8085/users"
+                        }
+                    }
+                }
+    
+    + Internationalization (I18n)
+
+	To implement the internationalization you need to create a properties files with the messages that you want to use,
+    and tell Spring that use those properties files. To do this you need to implement the method 
+
+        RestfulWebservicesApplication.java 
+        
+    	@Bean
+        public ResourceBundleMessageSource messageSource() {
+            ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+            messageSource.setBasename("messages");
+            return messageSource;
+        }
+        
+        Another way to do this in a simple way is to put the configuration of the messages into the 'application.properties'
+        
+            spring.messages.basename=messages
+        
+        . "messages" is the name of the properties files that you will create
+        
+        resources/ (folder)
+        
+        messages.properties: good.morning.messages = good morning
+        messages_fr.properties: good.morning.messages = bonjour
+    
+    
+            @GetMapping("/hello-world-i18n")	
+			public String helloWorldInternationalized(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
 				return messageSource.getMessage("good.morning.message", null, locale);
 			}
-			
-	- Mostrar respuesta en XML
+            
+            . @RequestHeader : El parametro va a ser tomado del Header
+            	* para pasar este paremetro en PostMan hacer:
+                    1. Seleccionar el tab "Headers"
+                    2. En la columna Key colocar "Accept-Language" y el valor "US/FR"
+            
+	+ Show response in XML format
 	
-		solo importar: jackson-dataformat-xml dependency
+		Just importar: jackson-dataformat-xml dependency
+        
+        compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.10.2'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+        
+        . GET http://localhost:8085/users (Headers: Accept = application/xml)
+        
+        <List>
+            <item>
+                <id>1</id>
+                <name>Merlin</name>
+                <birthDate>2020-03-29T03:01:53.541+0000</birthDate>
+            </item>
+            <item>
+                <id>2</id>
+                <name>Meliodas</name>
+                <birthDate>2020-03-29T03:01:53.541+0000</birthDate>
+            </item>
+            <item>
+                <id>3</id>
+                <name>Hawk</name>
+                <birthDate>2020-03-29T03:01:53.541+0000</birthDate>
+            </item>
+        </List>
 	
-	- Swagger Configuration
+	+ Swagger Configuration
+        
+        Add the dependencies:
+        
+        	implementation 'io.springfox:springfox-swagger2:2.9.2'
+            implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+            
+            *Nota: Swagger2 creates a conflic with spring-hateoas. You need to comment the hateoas to be able 
+                to use Swagger
+    
+        Create a file configuration with the following configurations to enable Swagger2
 	
-	@Configuration
-	@EnableSwagger2
-	public class SwaggerConfig {
-		@Bean
-		public Docket api() {
-			return new Docket(DocumentationType.SWAGGER_2);
-		}
-	}
-	
-	 - http://localhost:8081/v2/api-docs
-	 - http://localhost:8081/swagger-ui.html
-     
-     
-    H2 Database
+        @Configuration
+        @EnableSwagger2
+        public class SwaggerConfig {
+            @Bean
+            public Docket api() {
+                return new Docket(DocumentationType.SWAGGER_2);
+            }
+        }
+        
+        URLs Swagger2
+            http://localhost:8085/swagger-ui.html
+            http://localhost:8085/v2/api-docs
+            
+    + Monitoring APIS with Spring Boot Actuator
+    
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.data:spring-data-rest-hal-browser'
+    
+        URLs:
+        
+            http://localhost:8085/actuator
+            http://localhost:8085/actuator/metrics
+            
+            . Put the metric al the end of the url 
+            http://localhost:8085/actuator/metrics/jvm.memory.used
+            
+        Expose all the metrics in the application.properties
+        
+            management.endpoints.web.exposure.include = *
+    
+    + Filtering the attributes of the model
+    
+        To avoid send some of the attributes of a model you can use the annotation '@JsonIgnore' in the attibute that 
+        you don't want to show.
+        
+        public class Person {
+
+            private String name;
+            private LocalDate birthday;
+            @JsonIgnore
+            private String city;
+            
+            ...
+        }
+        
+        Reponse:
+        
+        {
+            name: "Daniel",
+            birthday: "1990-06-10"
+        }
+        
+        Alternative:
+        
+        @JsonIgnoreProperties(value={"<attribute1>","<attribute2>"})
+        public class Person { ... }
+
+    + Versioning
+    
+        . Media type verisioning ("content negotiation" or "accept header")
+            - GitHub
+            
+        . Custom headers versioning
+            - Microsoft
+            
+        . URI versioning
+            - Twitter
+        
+        . Request Parameter versioning
+            - Amazon
+            
+            
+            Factors to choose a versioning
+            ------------------------------
+            
+        1. URI pollution
+            (URI versioning, Request Parameters)
+        2. Misuse (mal uso) of HTTP Headers
+        3. Caching
+            can : (URI versioning, Request Parameters)
+            Can not : (Media type verisioning, Custom headers), because have the same URL
+        4. Can we execute the request on the browser?
+            Can not : (Media type verisioning, Custom headers)
+        5. API Documentation
+        
+    + Spring Security
+    
+        implement the dependency:
+        
+            implementation 'org.springframework.boot:spring-boot-starter-security'
+            
+        configure basic username/password (application.properties)
+        
+            spring.security.user.name = username
+            spring.security.user.password = password
+            
+        If the previous configurations are not sets, the default value of the user.name is 'user'
+        and the password is shown in the console of the application.
+        
+        This is a simple autorization, you need to depth this topic
+        
+    + JPA
+
+        1. Add to the model the notation '@Entity'
+    
+    + H2 Database
     
     - console: http://localhost:8081/h2-console
     - jdbc URL: jdbc:h2:mem:testdb
@@ -576,6 +900,797 @@
         Prefer  /users/1 to /user/1
         
     
+                    
+                    Microservices
+                    
+                    
+    Differents definitions:
+    
+        . Small autonomous services that work together (Sam Newman)
+        . There is a bare minimum of centralized management of these services, which may be written in different
+            programming languages and use different data storage technologies (James Lewis and Martin Fowler)
+            
+    Defition
+
+        . REst
+        . & Small Well Chosen Deployable Units
+        . & Cloud Enabled
+            
+        Servicios los cuales estan expuestos por REST ademas unidades pequeñas desplegables y estos deberian estar disponibles en la nube.
+        
+        Spring Cloud Config Server
+    
+            Provides an approches when you can have all the configurations for all the differents environments and microservices
+            centralizing the configuration in one place (git repositorio)
+        
+        Big Picture
+            
+            - Set of microservices with well defined boundaries which are interacting with each other
+            
+                MicroService1 -> MicroService2 -> MicroService3 -> MicroService4
+                
+            - These are cloud enabled. That means I would be able to have multiple instances for each of these microservices
+            
+                MicroService1   [A1] [A2]
+                      |
+                MicroService2   [B1] [B2] [B3] [B4]    
+                      |
+                MicroService3   [C1]
+            
+            
+        Dynamic Scale Up and Down
+
+
+                                        CurrencyCalculationService
+                                                      |
+                                                      |
+                                                   Ribbon   →   NamingServer
+                                                      |
+                                                      |
+                         -----------------------------------------------------------                           
+                        |                             |                             |
+            CurrencyExchangeServ1         CurrencyExchangeServ2         CurrencyExchangeServ3
+            
+            
+        Dynamic Scale Up and Down
+        
+            - Naming Server (Eureka)
+            - Ribbon (client Side Load Balancing)
+            - Feign (Easier REST client)
+        
+        Visibility And Monitoring
+            
+            - Zipkin Distributed Tracing
+            - Netflix API Gateway
+            
+        Fault Tolerance
+        
+            - Hystrix
+            
+    
+    Microservices Advantages
+    
+        - New technology & process adaptation, Each microservice can be build in different technology. Micro1 (java) - Micro2 (.Net) - etc.
+        - Dynamic scaling (you can scale up and scale down based on the load)
+        - Faster release cycles, new features faster
+        
+        
+        URL(https://github.com/in28minutes/spring-microservices/tree/master/03.microservices)
+            . List of ports that we will use
+            . URLs of the different component (Eureka, Zipkin, Spring Cloud config serv, etc)
+        
+        
+    Spring Cloud Config Server (Centralized Configuration)
+        
+        Managing all the settings for each microservices can be difficult and extensive. Spring cloud config server centralizes all the
+        configurations in one site to facilitate its administration.
+        
+        
+        
+                DEV              QA             STAGE               PROD
+                  |               |                |                  |
+                DEV1        QA1     QA2         STAGE1      PROD1   PROD2   PROD3   PROD4
+                
+                
+                 -----------------------------------------------------------------------
+                |                       Currency Exchange Service                       |
+                 -----------------------------------------------------------------------
+                
+         For Currency Exchange service, we have:       
+            - 4 production environments
+            - 2 QA environments 
+            - etc
+        
+        For each microservice there are multiple enviroments, and some of these environments have a multiple instances.
+        
+        
+     
+                    CurrencyCalculationService          CurrencyExchangeService             LimitsService
+                                |                                   |                               |
+                                |                                   |                               |
+                                 -------------------------------------------------------------------
+                                                                    |
+                                                                    |
+                                                                    
+                                                        Spring Cloud Config Server
+                                                        
+                                                                    |
+                                                                    |
+                                                                    
+                                                            Git Repository
+                                                                   
+                                                                   
+                    All the configurations are stored in a repository (Git), Spring cloud config provide the information         
+                                                                   
+                                                                   
+    
+        Note: SNAPSHOT, M1, M2, M3, M4 releases are typically WORK IN PROGRESS. (NOT use them)
+        
+        
+        
+        
+    Creation a simple service 'Limits service'
+    --------------------------------------------
+        
+        Spring Initializr
+            . Maven project
+            . Spring Boot 2.0
+            
+            Group: com.microservices
+            Artifact: limits-service
+            dependencies:
+                . web
+                . devTools
+                . actuator
+                . CONFIG CLIENT
+                                                                  
+
+    . Spring Boot read properties
+    
+            applicaion.properties            
+                limit-services.minimum=99
+                limit-services.maximum=999
+        
+        Create a class and put the annotation '@ConfigurationProperties'        
+        
+            @ConfigurationProperties("limit-services")
+            public class Configuration {
+                private int property1;
+                private int property2;
+            }
+        
+        . @ConfigurationProperties is sufficient to register the bean as a Component
+        . as parameter you can put the prefix of the properties, in this case 'limit-services'
+            and then create a variable with the name of the property.
+            
+            private int minimum;
+            private int maximum;
+            
+            and generate Getter/Setter
+        
+        
+        Invoke the properties
+        
+        
+        @Autowired
+        private Configuration config;
+        
+        public method() {
+        
+            system.output.println(config.getMaximum(), onfig.getMinimum());
+        }
+        
+            
+    
+    Creation a simple service 'Spring cloud config service'
+    --------------------------------------------------------
+        
+        Spring Initializr
+            . Maven/Gradle project
+            . Spring Boot 2.0
+            
+            Group: com.microservices
+            Artifact: spring-cloud-config-server
+            dependencies:
+                . config server
+                . devTools
+            
+            
+        application.properties
+            spring.application.name=spring-cloud-config-server
+            server.port=8888
+            
+    
+        . Git installation
+    
+            1. Install Git from the web official
+            2. Create a folder for the repository
+            
+                mkdir git-local-config-repo && cd git-local-config-repo
+                git init
+                touch limit-services
+                    limits-service.minimum: "8",
+                    limits-service.maximum: "888"
+                git commit -m "Initial commit"
+                
+            3. linked the git folder with the project
+            
+                File > Project Structure > [Modules]                
+                + Add Content root > select the folder
+                
+                https://www.jetbrains.com/help/idea/content-roots.html
+            
+        . Enable Spring cloud
+        
+            1. In the SpringBootApplication class add the annotation '@EnableConfigServer'
+
+            
+            http://localhost:8888/limits-service/default
+            
+                {
+                  name: "limits-service",
+                  profiles: [
+                    "default"
+                  ],
+                  label: null,
+                  version: "89867269f4cc5caef8085e449f33b0ec7e2d5ecf",
+                  state: null,
+                  propertySources: [
+                    {
+                      name: "file://C:\workspace\microservicios\git-local-config-repo/limits-service.properties",
+                      source: {
+                        limits-service.minimum: "8",
+                        limits-service.maximum: "888"
+                      }
+                    }
+                  ]
+                }
+                
+                
+                - 8888: port defined in the application.properties
+                - limits-service : name of the file in the repository
+                
+        . Use multiple properties for each environments
+        
+            1. Create a properties for each environment that you want and override the values
+            
+                limits-service-qa.properties
+                    limits-service.minimum: "2",
+                    limits-service.maximum: "222"
+                limits-service-dev.properties
+                    limits-service.minimum: "1",
+                    limits-service.maximum: "111"
+                
+            2. Consult the values for the specific environment
+            
+                http://localhost:8888/limits-service/qa
+                
+                {
+                  name: "limits-service",
+                  profiles: [
+                    "qa"
+                  ],
+                  label: null,
+                  version: "af8c49ccce51419d6779a57aeef81f217475ff92",
+                  state: null,
+                  propertySources: [
+                    {
+                      name: "file://C:\workspace\microservicios\git-local-config-repo/limits-service-qa.properties",
+                      source: {
+                        limits-service.minimum: "2",
+                        limits-service.maximum: "222"
+                      }
+                    },
+                    {
+                      name: "file://C:\workspace\microservicios\git-local-config-repo/limits-service.properties",
+                      source: {
+                        limits-service.minimum: "8",
+                        limits-service.maximum: "888"
+                      }
+                    }
+                  ]
+                }
+                
+                It will show the specific values for the environment but also the default values 
+                
+                
+    Connect the Limit service with spring-cloud-config-server
     
     
+                              LimitsService
+                                    |
+                        Spring Cloud Config Server
+                                    |
+                            Git Repository
+                            
+        One of the thing that we want is to connect the Limit service to use the properties that are inside in 
+        the Git repository, to do that, we need to do some changes on Limit server.
+        
+        
+        1. rename the properties files: application.properties to bootstrap.properties
+        2. remove the properties of the limits-services maximum/minimum
+        3. Remember that the application name needs to match with the properties files in the configuration server
+        
+            spring.application.name=limits-service
+            
+        4. Run the application
+        
+            ... Fetching config from server at : http://localhost:8888
+            Located environment: name=limits-service, profiles=[default], label=null, version=af8c49ccce51419d6779a57aeef81f217475ff92, state=null
+            Located property source: [BootstrapPropertySource {name='bootstrapProperties-configClient'}, BootstrapPropertySource {name='bootstrapProperties-file://C:\workspace\microservicios\git-local-config-repo/limits-service.properties'}]
+            
+            
+    Define a profile active 'Limit service' project
     
+    
+        On the boostrap.properties define the property:
+        
+            spring.profiles.active = <profile>
+            spring.profiles.active = dev | qa | prod
+            
+        Modify the file 'dev' to remove the maximum value, this value will be the default value 888
+        
+            limits-service-dev.properties
+                limits-service.minimum: "1",
+                #limits-service.maximum: "111" // comment this line
+            
+            For the change to take effect, you need to commit the change and restart the 'limit service' to update the values
+            then, go to     http://localhost:8080/limits
+            
+                {
+                  maximum: 888,
+                  minimum: 1
+                }
+            
+            - maximum value is taken from the default value (limits-service.properties)
+            - minimum value is taken from the 'dev' profile (limits-service-dev.properties)
+            
+        Note: If you want to change the profile you only need to change the profiles.active property and the devtools will refreshing 
+            the values without restart the server. 
+            (ONLY IF THE DEVTOOLS IS WORKING WELL https://stackoverflow.com/questions/33869606/intellij-15-springboot-devtools-livereload-not-working/50198253) 
+            
+            spring.profiles.active = qa
+            
+    Exercice
+
+
+             ----------------------------               -------------------------               ---------------
+            | CurrencyCalculationService |     ->      | CurrencyExchangeService |     ->      | LimitsService |
+             ----------------------------               -------------------------               ---------------
+                                                                    |                                  |
+                                                                Database                         Configuration
+                                                                
+                                                                
+                . CurrencyExchangeService will use JPA to talk to the database to return the exchange value to 
+                    a specific currency (moneda).
+                    
+                    I want to convert USD to COP, what is the exchange value? 3300
+                    We need to pass two values the currency actual and the wanted currency
+                    
+                        currency-exchange/from/USD/to/COP
+                        
+        
+        - CurrencyExchangeService
+        
+            Spring Initializr
+                . Maven/Gradle project
+                . Spring Boot 2.3.1
+                
+                Group: com.microservices
+                Artifact: currency-exchange-service
+                dependencies:
+                    . web
+                    . config client
+                    . devTools 
+                    . actuator
+                    
+            Basic controller
+            
+                public class ExchangeValue {
+                    private Long id;
+                    private String from;
+                    private String to;
+                    private BigDecimal conversionMultiple;
+                    private int port;
+                    
+                    ..
+                }
+            
+                http://localhost:8000/currency-exchange/from/USD/to/COP
+                
+                    {
+                      id: 1000,
+                      from: "USD",
+                      to: "COP",
+                      conversionMultiple: 65
+                      port: 8000
+                    }
+                    
+                . Run multiple instances with different ports IntelliJ
+                
+                
+                go to 'Edit configurations' (panel to run the application)
+                    
+                    - copy the actual configuration and change the name:
+                        - name : CurrencyExchangeServiceApplication8001
+                        - VM Options: -Dserver.port=8001
+                
+                    Do this the times that you want to change the port
+                    
+                    http://localhost:8001/currency-exchange/from/USD/to/COP
+                    
+                        {
+                          id: 1000,
+                          from: "USD",
+                          to: "COP",
+                          conversionMultiple: 65
+                          port: 8001
+                        }
+                        
+                        
+            H2 console: http://localhost:8000/h2-console
+            
+            
+    Feign
+    -----------------------
+    
+    Resolve the problem to invoke another microservices
+    
+        . Add the dependency: 
+            
+            implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.0.RELEASE'
+        
+        . Enable Feign Clients, on the SpringBootApplication class, add the annotation:
+                
+            @EnableFeignClients("<package>")    package that you need to scan
+            @EnableFeignClients("com.microservices.limitsservice")
+            
+    To use the feign client to talk with others repositories, firstable we need to create a Feign proxy
+    to talk with external microservices
+    
+    
+        1. Create an interface with the service that it will invoke. 
+        
+                CurrencyConversion -> CurrencyExchange
+        
+            @FeignClient(name="currency-exchange-service", url="")
+            public interface CurrencyExchangeServiceProxy {
+            
+            }
+            
+            @FeignClient(name="", url="")
+                - name : name of the service that we are goint to call (spring.application.name=currency-exchange-service)
+                - url : URL of the service
+                
+        2. Include the restController of the service that we want to call [currency-exchange-service], and change the return type
+        
+            public interface CurrencyExchangeServiceProxy {    
+                @GetMapping("/currency-exchange/from/{from}/to/{to}")
+                public CurrencyConversionBean retrieveExchangeValue(@PathVariable String from, @PathVariable String to);
+            }
+            
+            
+            Feign is the rest service client, help you to invoke another microservice in an easy way
+            
+    
+     Use Ribbon Load Balancing
+    -------------------------
+    
+                                        CurrencyCalculationService
+                                                      |
+                                                      ↓
+                                                   Ribbon   →   NamingServer
+                                                      |
+                                                      |
+                         -----------------------------------------------------------                           
+                        ↓                             ↓                             ↓
+            CurrencyExchangeServ1         CurrencyExchangeServ2         CurrencyExchangeServ3
+    
+    
+        Currency-conversion project
+    
+        1. Add the dependency: implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.2.0.RELEASE'
+        2. Enable Ribbon, add the annotation @RibbonClient(name="currency-exchange-service") in the FeignProxy interface
+        3. We don't need to declare the url attribute in the @FeignClient because we are going to configure the URL 
+            in a different way, we don't wank to talk to one particular instance, but we would want to distribute the load 
+            between multiple instances.
+            
+            
+        Configure the list of URL of the service
+        
+        1. In the application.properties add the below property
+        
+        
+            <project-name>.ribbon.listOfServers
+            currency-conversion-service.ribbon.listOfServers = http://localhost:8000, http://localhost:8001
+     
+    Eureka Naming Server
+    ----------------------
+    
+        How to improve the code and avoid hardcode the ports of the instances and do this dinamically
+        
+        1. All the instances of all microservices would register with the naming server
+    
+    
+             CurrencyCalculationService             CurrencyExchangeService                 LimitsService
+                            |                                   |                               |
+                            ↓                                   ↓                               ↓
+                             -------------------------------------------------------------------
+                                                                |
+                                                                ↓
+                                                      Eureka Naming Server
+                                                      
+            
+            Whenever an instance of a micro-service comes up it would register itselft Eureka naming server.
+            this is called service registration.
+            
+            Whenever a service wants to talk to another service let's said the Currency calculation service wants to talk
+            to the Currency exchange service what would it do?
+            
+                1. Service discovery: 
+                
+                It would talk to the name server and it would ask the name server waht are the instances of the 
+                Currency Exchange service that are currently running.
+                
+    
+        - Create Eureka naming server
+        
+            Spring Initializr
+                . Maven/Gradle project
+                . Spring Boot 2.3.1
+                
+                Group: com.microservices
+                Artifact: netflix-eureka-naming-server
+                dependencies:
+                    . eureka server
+                    . config client
+                    . actuator
+                    . devTools 
+                    
+        
+        1. Enable Eureka, in the SpringBootApplication class add the annotation: @EnableEurekaServer
+        2. In the application.property set a simple configuration
+        
+            spring.application.name=netflix-eureka-naming-server
+            server.port=8761
+
+            eureka.client.register-with-eureka=false
+            eureka.client.fetch-registry=false
+        
+        - Connecting Currency-conversion-service with eureka
+        
+            In Currency-conversion-service [project]
+            
+            1. add the dependency of eureka:
+                implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+                
+            2. In the SpringBootApplication class add the annotation to enable the discover client
+                
+                @SpringBootApplication
+                @EnableFeignClients("com.microservices")
+                @EnableDiscoveryClient
+                
+            3. Configure the URL of eureka
+            
+        - Connecting Currency-exchange-service with eureka
+        
+            In Currency-exchange-service [project]
+            
+            1. add the dependency of eureka:
+                implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+                
+            2. In the SpringBootApplication class add the annotation to enable the discover client
+                
+                @SpringBootApplication
+                @EnableFeignClients("com.microservices")
+                @EnableDiscoveryClient
+                
+            3. Configure the URL of eureka
+            
+                eureka.client.service-url.default-zone=http://localhost:8761/eureka
+                
+        - Start up microservices
+        
+            eureka:     http://localhost:8761/eureka
+            
+            exchange:   http://localhost:8000/currency-exchange/from/USD/to/COP
+                        http://localhost:8001/currency-exchange/from/USD/to/COP
+                        
+            conversion: http://localhost:8100/currency-converter-feign/from/EUR/to/COP/quantity/151
+                        http://localhost:8100/currency-converter-feign/from/EUR/to/COP/quantity/151
+
+
+
+        API GATEWAYS
+        
+    . Authentication, authorization and security
+    . Rate limits       (number of invocations per minute)
+    . Fault tolearation
+    . Service Aggregation
+    
+        To call each microservice directly what we'll do is would made all the calls for through an API gateway,
+        and the API would take care of providing common features like autentication making sure that all service call
+        are logged making, etc.
+        
+    
+    Creation Zuul API gateway
+    --------------------------------------------------------
+        
+        Spring Initializr
+            . Maven/Gradle project
+            . Spring Boot 2.3.1
+            
+            Group: com.microservices
+            Artifact: netflix-zuul-api-gateway-server
+            dependencies:
+                . zuul
+                . eureka discovery
+                . actuator
+                . devTools
+                
+        1. In the SpringBootApplication class add the annotation to enable the discover client
+        
+            @SpringBootApplication
+            @EnableZuulProxy
+            @EnableDiscoveryClient
+            
+        2. application.properties
+        
+            spring.application.name=netflix-zuul-api-gateway-server
+            server.port=8765
+            eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
+        3. start up all the applications
+        
+            eureka:     http://localhost:8761/eureka
+            
+            exchange:   http://localhost:8000/currency-exchange/from/USD/to/COP
+                        
+            conversion: http://localhost:8100/currency-converter-feign/from/EUR/to/COP/quantity/151
+            
+            Zuul:       http://localhost:8765
+            
+        
+        . To invoke the currency-exchange you only need to call the url:
+        
+                http://localhost:8000/currency-exchange/from/USD/to/COP
+        
+        . Now, to call the endpoint but this time using the API gateway, we need to change the URL
+        
+                http://localhost:8000/currency-exchange/from/USD/to/COP
+                                    ↓ 
+                http://localhost:8765/{application-name}/{uri}
+                                    ↓
+                http://localhost:8765/currency-exchange-service/currency-exchange/from/USD/to/COP
+                
+            - the application name can be found, in the eureka pag or searching into the application.properties of the project
+            
+            result:
+            
+                2020-06-22 19:40:25.778  INFO 4544 --- [nio-8765-exec-1] com.microservices.ZuulLoggingFilter      :
+                request -> org.springframework.cloud.netflix.zuul.filters.pre.Servlet30RequestWrapper@36773b1c 
+                request uri -> /currency-exchange-service/currency-exchange/from/USD/to/COP
+                
+                The log show the request information that was defined into the method:
+                
+                    @Override
+                    public Object run() throws ZuulException {
+                        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+                        logger.info("request -> {} request uri -> {}", request, request.getRequestURI());
+                        return null;
+                    }
+        
+    
+    Modifing the CurrencyCalculationService to use the API gateway
+                
+                                                    
+             ----------------------------                       -------------------------               ---------------
+            | CurrencyCalculationService |   ->  (API) ->      | CurrencyExchangeService |     ->      | LimitsService |
+             ----------------------------                       -------------------------               ---------------
+                                                                            |                                  |
+                                                                        Database                         Configuration
+            
+         . This is the previous configuration
+
+
+            @FeignClient(name="currency-exchange-service")
+            @RibbonClient(name="currency-exchange-service")
+            public interface CurrencyExchangeServiceProxy {
+
+                @GetMapping("/currency-exchange/from/{from}/to/{to}")
+                public CurrencyConversionBean retrieveExchangeValue(@PathVariable String from, @PathVariable String to);
+            }
+            
+            
+            1. The @FeignClient needs to point to the API GATEWAY name
+            
+                @FeignClient(name="netflix-zuul-api-gateway-server")
+                
+            2. The GetMapping need to use the new URL
+            
+                    http://localhost:8765/{application-name}/{uri}
+                                    ↓
+                    http://localhost:8765/currency-exchange-service/currency-exchange/from/USD/to/COP
+            
+                @GetMapping("/currency-exchange/from/{from}/to/{to}")
+                                    ↓
+                @GetMapping("/currency-exchange-service/currency-exchange/from/{from}/to/{to}")
+        
+            3. call the endpoint
+            
+                http://localhost:8100/currency-converter-feign/from/EUR/to/COP/quantity/151
+                
+    
+    Spring Cloud Sleuth
+    
+    Add a unique id to the request
+    
+        For all projects [currencyExchange, currency-conversion, zuul-api-gateway-server]
+        
+        1. implement this component only adding a dependency in the build.gradle 
+    
+            implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+        
+        2. Define which are the request to intercept in the SpringBootApplication
+            
+            @Bean
+            public Sampler defaultSampler() {
+                return Sampler.ALWAYS_SAMPLE;
+            }
+            
+        
+        
+        2020-06-22 20:50:00.074  INFO [currency-exchange-service,61455502160d6f8e,61455502160d6f8e,true] 
+        19604 --- [nio-8000-exec-2] c.m.c.CurrencyExchangeController         : com.microservices.model.ExchangeValue@5a62e09
+        
+        
+        020-06-22 20:51:13.602  INFO [currency-conversion-service,395e24f1de2b1c81,395e24f1de2b1c81,true] 
+        11628 --- [nio-8100-exec-1] c.n.l.DynamicServerListLoadBalancer      : DynamicServerListLoadBalancer for client netflix-zuul-api-gateway-server initialized: 
+        DynamicServerListLoadBalancer:{NFLoadBalancer:name=netflix-zuul-api-gateway-server,current list of Servers=[host.docker.internal:8765],
+        Load balancer stats=Zone stats: {defaultzone=[Zone:defaultzone;	Instance count:1;	Active connections count: 0;	Circuit breaker tripped count: 0;
+        Active connections per server: 0.0;]
+        
+        
+        
+    Zipkin distribued tracing
+    
+        
+         ----------------------------                -------------------------                    ---------------
+        | CurrencyCalculationService |              | CurrencyExchangeService |                  | LimitsService |
+         ----------------------------                -------------------------                    ---------------
+                        |                                       |                                       |
+                        |                                       |                                       |
+                         -------------------------------------------------------------------------------
+                                                                |
+                                                                |
+                                                                
+                                                            RabbitMQ
+                                                                
+                                                                |
+                                                                |
+                                                    -----------------------------
+                                                   | ZipkinDistutebTracingServer |
+                                                    -----------------------------
+                                                                |
+                                                                |
+                                                           ----------     
+                                                          | Database |
+                                                           ----------
+                                                                    
+    . Install RabbitMQ
+    
+        - option 1:
+            docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+        - option 2:
+            
+            . Create a docker-compose.yml file with the following content
+                version: '3'
+                services:
+                  rabbitmq:
+                    container_name: rabbitmq
+                    ports:
+                      - "5672:5672"
+                      - "15672:15672"
+                    image: rabbitmq:3-management
+            .   $ cd /c/docker/rabbitmq
+                $ docker-compose up -d
