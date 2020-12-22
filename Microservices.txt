@@ -48,7 +48,7 @@
                 App Php     ----
                 
                 
-                Independiente de su tecnologia estas app deberian ser capacez de hablar con TodoService application
+                Independiente de su tecnologia estas app deberian ser capaces de hablar con TodoService application
                 
         - How? questions
         
@@ -64,26 +64,24 @@
                           Response
                 
                 Si la App A crea un request diciendo "OK, Necesito los detalles de un curso"
-                Web Service miraria la solicitud, la procesaria y deberia crear una respuesta con la lista
-                de cursos y retornar estos.
+                Web Service miraria la solicitud, la procesaria y deberia crear una respuesta con la lista de cursos y retornarlos.
                 
             . How can we make web services platform independent?
             
                 Usando intercambio de datos en formatos como XML y JSON.
                 
-                El Request y Response deberian estar en un formato el cual esta soportado por todos los 
-                diferentes tipos de plataforma
+                El Request y Response deberian estar en un formato el cual esta soportado por todos los diferentes tipos de plataforma
                 
                 Hay 2 formatos de Request y Response:
                     
                     . XML
-                    
+
                         <getCourseDetailsRequest>
                             <id>Course1</id>
                         </getCourseDetailsRequest>
                     
                     . JSON (Javascript object notation)
-                    
+
                         [
                             {
                                 "id": 1,
@@ -97,26 +95,25 @@
                 La solucion a esto es "service definition". Cada web services ofrece un service definition.
                 
                 
-                                        - Request/Response Format     (Is a XML? Is a JSON?)
+                                        - Request/Response Format     Is a XML? Is a JSON?
                                 
-                                        - Request Structure           (How can a consumer create a request?)
+                                        - Request Structure           How can a consumer create a request?
                 Service Definition:                
-                                        - Response Structure          (How is the response of the web service?)
+                                        - Response Structure          How is the response of the web service?
                                 
-                                        - Endpoint                    (How to call the service, Where is the service 
-                                                                       available)
+                                        - Endpoint                    How to call the service? Where is the service available?
 
         - Key Terminology
 
             . Request and Response:         Input / Output of a web service
             
-            . Message Exchange format:      formato de intercambio del request y response. Is XML or JSON
+            . Message Exchange format:      formato de intercambio del request y response, XML or JSON
                 
             . Service Provider or 'server': Is the one which hosts the web service (aloja el servicio web)
             
             . Service Consumer or 'Client': Is the one which is consuming the web service
             
-            . Service Definition:           Define the contract between the service provider an the service consumer
+            . Service Definition:           Define the contract between the service provider and the service consumer
             
             . Transport:                    Define a service is call, using HTTP and MQ
                 
@@ -127,7 +124,7 @@
                 - Or is the service exposed over a Queue, communication and transport is over a Queue
                     
                      Service                        Service
-                    Requestor                       Provider
+                    Requester                       Provider
                         ^                               ^
                         |                               |
                         |                               |
@@ -151,8 +148,7 @@
             ".. SOAP and REST are not really comparable.."
             
             REST define un enfoque Arquitectural
-            SOAP plantea restricciones en el formato de XML el cual es intercambiado entre su proveedor de servicio
-            y el consumidor
+            SOAP plantea restricciones en el formato de XML el cual es intercambiado entre su proveedor de servicio y el consumidor
             
             ====================================
              SOAP Simple Object Access Protocol
@@ -236,9 +232,6 @@
                             
                                 - Response Structure
 
-
-        ** SOAP IS ALL ABOUT ADHERING TO THE SERVICES XML STRUCTURE. ADHERING TO THE ENVELOP HEADER AND THE BODY **
-
         
             ======================================
              REST REpresentational State Transfer
@@ -255,7 +248,7 @@
              -------------------------------------------------------------------
             
                              Request
-                         -------------->               The requests and reponses are in format which is defined 
+                         -------------->               The requests and responses are in format which is defined 
                 Browser                  Server        by HTTP. Hyper Tex Transfer Protocol
                          <--------------
                              Response
